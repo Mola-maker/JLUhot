@@ -2,6 +2,215 @@
   "$comment": "示范信源：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里新建、修改和暂停。字段说明见 docs/customize.md。",
   "sources": [
     {
+      "id": "jlu-news-focus",
+      "name": "吉大新闻·焦点新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://news.jlu.edu.cn/jdxw/jdxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".list-news-left > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtRegex": "\\[(\\d{4}-\\d{2}-\\d{2})\\]",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://news.jlu.edu.cn/info/"
+        ],
+        "detail": {
+          "publishedAtSelector": ".content-title span a",
+          "publishedAtRegex": "发布日期[^\\d]*(\\d{4}-\\d{2}-\\d{2})",
+          "titleSelector": ".content-title h2"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 20
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "jlu-news-center",
+      "participation_mode": "editorial",
+      "interval_minutes": 30,
+      "tags": [
+        "官方",
+        "要闻"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-news-xykx",
+      "name": "吉大新闻·校园快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://news.jlu.edu.cn/jdxw/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": ".list-news-left > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtRegex": "\\[(\\d{4}-\\d{2}-\\d{2})\\]",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://news.jlu.edu.cn/info/"
+        ],
+        "detail": {
+          "publishedAtSelector": ".content-title span a",
+          "publishedAtRegex": "发布日期[^\\d]*(\\d{4}-\\d{2}-\\d{2})",
+          "titleSelector": ".content-title h2"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 20
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "jlu-news-center",
+      "participation_mode": "editorial",
+      "interval_minutes": 30,
+      "tags": [
+        "官方",
+        "快讯"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-lectures",
+      "name": "吉大新闻·讲座预告",
+      "kind": "web_list",
+      "config": {
+        "url": "https://news.jlu.edu.cn/jzyg.htm",
+        "parseMode": "html",
+        "itemSelector": ".list-news-left > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "allowUrlPrefixes": [
+          "https://news.jlu.edu.cn/info/"
+        ],
+        "detail": {
+          "publishedAtSelector": ".content-title span a",
+          "publishedAtRegex": "发布日期[^\\d]*(\\d{4}-\\d{2}-\\d{2})",
+          "publishedAtUtcOffset": "+08:00",
+          "titleSelector": ".content-title h2"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 20
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "jlu-news-center",
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "官方",
+        "讲座"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-oa-notice",
+      "name": "吉大OA·校内通知",
+      "kind": "external",
+      "config": {},
+      "tier": "T1",
+      "owner_entity_id": "jlu",
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "官方",
+        "通知",
+        "OA推送"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-oa-kuaixun",
+      "name": "吉大OA·校内快讯",
+      "kind": "external",
+      "config": {},
+      "tier": "T1",
+      "owner_entity_id": "jlu",
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "官方",
+        "快讯",
+        "OA推送"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-oa-jiaoxue",
+      "name": "吉大OA·教学信息",
+      "kind": "external",
+      "config": {},
+      "tier": "T1",
+      "owner_entity_id": "jlu",
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "官方",
+        "教学",
+        "OA推送"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-oa-xueshu",
+      "name": "吉大OA·学术动态",
+      "kind": "external",
+      "config": {},
+      "tier": "T1",
+      "owner_entity_id": "jlu",
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "官方",
+        "学术",
+        "OA推送"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-oa-student",
+      "name": "吉大OA·学生天地",
+      "kind": "external",
+      "config": {},
+      "tier": "T1",
+      "owner_entity_id": "jlu",
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "官方",
+        "学生",
+        "OA推送"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "rss-aihot-news",
+      "name": "AIhot·每日精选",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://aihot.news/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "AIhot"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
       "id": "rss-openai-news",
       "name": "OpenAI News",
       "kind": "rss",
@@ -12,14 +221,14 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": "openai",
+      "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
         "官方"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-google-deepmind",
@@ -32,14 +241,14 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": "google",
+      "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
         "官方"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-google-research",
@@ -52,15 +261,15 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": "google",
+      "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
         "官方",
         "研究"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-hugging-face",
@@ -73,15 +282,15 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": "hugging-face",
+      "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
         "官方",
         "开源"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-microsoft-research",
@@ -94,15 +303,15 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": "microsoft",
+      "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
         "官方",
         "研究"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-nvidia-blog",
@@ -115,14 +324,14 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": "nvidia",
+      "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
         "官方"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-aws-ml",
@@ -142,8 +351,8 @@
         "官方",
         "教程"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-github-ai",
@@ -162,8 +371,8 @@
       "tags": [
         "官方"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-mistral",
@@ -182,8 +391,8 @@
       "tags": [
         "官方"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-bair",
@@ -202,8 +411,8 @@
       "tags": [
         "研究"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-the-verge-ai",
@@ -222,8 +431,8 @@
       "tags": [
         "媒体"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-techcrunch-ai",
@@ -242,8 +451,8 @@
       "tags": [
         "媒体"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-ars-technica-ai",
@@ -262,8 +471,8 @@
       "tags": [
         "媒体"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-mit-tech-review-ai",
@@ -282,8 +491,8 @@
       "tags": [
         "媒体"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-the-decoder",
@@ -302,8 +511,8 @@
       "tags": [
         "媒体"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-simon-willison",
@@ -322,8 +531,8 @@
       "tags": [
         "个人"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-import-ai",
@@ -343,8 +552,8 @@
         "个人",
         "周刊"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     },
     {
       "id": "rss-latent-space",
@@ -363,8 +572,1168 @@
       "tags": [
         "个人"
       ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-ccst",
+      "name": "计算机科学与技术学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://ccst.jlu.edu.cn/xwzx/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".list3 > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://ccst.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-csw",
+      "name": "软件学院·专题报道",
+      "kind": "web_list",
+      "config": {
+        "url": "https://csw.jlu.edu.cn/index/ztbd.htm",
+        "parseMode": "html",
+        "itemSelector": ".text-list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://csw.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-ee",
+      "name": "电子科学与工程学院·新闻动态",
+      "kind": "web_list",
+      "config": {
+        "url": "https://ee.jlu.edu.cn/index/xwdt.htm",
+        "parseMode": "html",
+        "itemSelector": ".xwlist > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://ee.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-dce",
+      "name": "通信工程学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://dce.jlu.edu.cn/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".ny_r .con > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://dce.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-law",
+      "name": "法学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://law.jlu.edu.cn/index/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".xinwen .new > div > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://law.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-chem",
+      "name": "化学学院·新闻动态",
+      "kind": "web_list",
+      "config": {
+        "url": "https://chem.jlu.edu.cn/xwtz/xwdt.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list-text > li",
+        "linkSelector": "a.tit",
+        "titleSelector": "a.tit",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://chem.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-phy",
+      "name": "物理学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://phy.jlu.edu.cn/xyzl/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".tit-list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://phy.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-math",
+      "name": "数学学院·院系快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://math.jlu.edu.cn/yskx.htm",
+        "parseMode": "html",
+        "itemSelector": ".sec-fr .list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://math.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-jjxy",
+      "name": "经济学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://jjxy.jlu.edu.cn/gzdt/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".main > div > ul.list3 > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://jjxy.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-sg",
+      "name": "商学与管理学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://sg.jlu.edu.cn/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".list2 > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "p.title",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://sg.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-wxy",
+      "name": "文学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://wxy.jlu.edu.cn/xwgg/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.news-list > li",
+        "linkSelector": "a",
+        "titleSelector": "p.title",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://wxy.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-sflc",
+      "name": "外国语言文化学院·学院资讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://sflc.jlu.edu.cn/xyzx.htm",
+        "parseMode": "html",
+        "itemSelector": ".list-other > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://sflc.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-medicine",
+      "name": "基础医学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://medicine.jlu.edu.cn/index/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": ".list-news > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://medicine.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-mae",
+      "name": "机械与航空航天工程学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://mae.jlu.edu.cn/index/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": ".nypart_r .list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://mae.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-auto",
+      "name": "汽车工程学院·综合要闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://auto.jlu.edu.cn/zhyw.htm",
+        "parseMode": "html",
+        "itemSelector": ".right > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://auto.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-dmse",
+      "name": "材料科学与工程学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://dmse.jlu.edu.cn/ynbg/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": ".qk-list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "h3",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://dmse.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-life",
+      "name": "生命科学学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://life.jlu.edu.cn/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list-text > li",
+        "linkSelector": "a.tit",
+        "titleSelector": "a.tit",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://life.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-sai",
+      "name": "人工智能学院·焦点新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://sai.jlu.edu.cn/jdxw.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list1 > li",
+        "linkSelector": "a",
+        "titleSelector": "p.title",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://sai.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-marx",
+      "name": "马克思主义学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://marx.jlu.edu.cn/xxgk/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": ".tw > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "h3",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://marx.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-zsy",
+      "name": "哲学社会学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://zsy.jlu.edu.cn/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list-text > li",
+        "linkSelector": "a.tit",
+        "titleSelector": "a.tit",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://zsy.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-kgxy",
+      "name": "考古学院·学院动态",
+      "kind": "web_list",
+      "config": {
+        "url": "https://kgxy.jlu.edu.cn/xydt.htm",
+        "parseMode": "html",
+        "itemSelector": ".nydynamic > ul > li",
+        "linkSelector": ".txt a",
+        "titleSelector": ".txt a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://kgxy.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-hac",
+      "name": "历史文化学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://hac.jlu.edu.cn/xwgg/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": ".contimgt14_5_tlist > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "h3",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://hac.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-art",
+      "name": "艺术学院·新闻公告",
+      "kind": "web_list",
+      "config": {
+        "url": "https://art.jlu.edu.cn/xwgg.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list-text > li",
+        "linkSelector": "a.tit",
+        "titleSelector": "a.tit",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://art.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-pe",
+      "name": "体育学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://pe.jlu.edu.cn/xzgz1/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.ej_list > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://pe.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-adm",
+      "name": "行政学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://adm.jlu.edu.cn/index/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".sublist > ul > li",
+        "linkSelector": ".c1 a",
+        "titleSelector": ".c1 a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://adm.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-nasa",
+      "name": "东北亚学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://nasa.jlu.edu.cn/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.ul02 > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://nasa.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-sipa",
+      "name": "公共外交学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://sipa.jlu.edu.cn/index/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".news2 > div > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://sipa.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-jt",
+      "name": "交通学院·综合要闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://jt.jlu.edu.cn/zhyw.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list-con > li",
+        "linkSelector": "a.tit",
+        "titleSelector": "a.tit",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://jt.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-cbae",
+      "name": "生物与农业工程学院·新闻动态",
+      "kind": "web_list",
+      "config": {
+        "url": "https://cbae.jlu.edu.cn/xwdt.htm",
+        "parseMode": "html",
+        "itemSelector": ".wslb > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "h4",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://cbae.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-geo",
+      "name": "地球科学学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://geo.jlu.edu.cn/index/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": ".mainr .list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://geo.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-gest",
+      "name": "地球探测科学与技术学院·学院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://gest.jlu.edu.cn/xyxw.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list-text > li",
+        "linkSelector": "a.tit",
+        "titleSelector": "a.tit",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://gest.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-const",
+      "name": "建设工程学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://const.jlu.edu.cn/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list_list > li",
+        "linkSelector": "a.tit",
+        "titleSelector": "a.tit",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://const.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-cer",
+      "name": "新能源与环境学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://cer.jlu.edu.cn/index/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": ".list3 > ul > li",
+        "linkSelector": "a.bt",
+        "titleSelector": "a.bt",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://cer.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-ciee",
+      "name": "仪器科学与电气工程学院·新闻快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://ciee.jlu.edu.cn/index/xwkx.htm",
+        "parseMode": "html",
+        "itemSelector": ".txtList > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://ciee.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-sph",
+      "name": "公共卫生学院·学院快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://sph.jlu.edu.cn/xwzx/xykx.htm",
+        "parseMode": "html",
+        "itemSelector": ".info_list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://sph.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-yxy",
+      "name": "药学院·学院要闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://yxy.jlu.edu.cn/index/xyyw.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.djList > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://yxy.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-hlxy",
+      "name": "护理学院·学院动态",
+      "kind": "web_list",
+      "config": {
+        "url": "https://hlxy.jlu.edu.cn/index/xydt.htm",
+        "parseMode": "html",
+        "itemSelector": ".text-list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://hlxy.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-jdkq",
+      "name": "白求恩口腔医学院·医院新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://jdkq.jlu.edu.cn/xwzx/yyxw.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list-text > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://jdkq.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-dwyx",
+      "name": "动物医学学院·新闻动态",
+      "kind": "web_list",
+      "config": {
+        "url": "https://dwyx.jlu.edu.cn/xwdt.htm",
+        "parseMode": "html",
+        "itemSelector": ".timg-list > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://dwyx.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
+    },
+    {
+      "id": "jlu-college-spxy",
+      "name": "食品科学与工程学院·新闻中心",
+      "kind": "web_list",
+      "config": {
+        "url": "https://spxy.jlu.edu.cn/xwzx.htm",
+        "parseMode": "html",
+        "itemSelector": "ul.list1 > li",
+        "linkSelector": "a",
+        "titleSelector": "p.title",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://spxy.jlu.edu.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "学院",
+        "学院"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": true
     }
   ]
 }
