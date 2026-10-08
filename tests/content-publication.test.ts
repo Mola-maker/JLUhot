@@ -7,7 +7,8 @@ import { pickRepresentative, representativePriority } from "@aihot/backend/publi
 import { loadTimeline } from "@aihot/backend/publication/timeline";
 import { loadStoryFollowups } from "@aihot/backend/publication/followups";
 import { loadGroupReports } from "@aihot/backend/publication/groups";
-import { loadItemDetail } from "@aihot/backend/publication/detail";
+import { exportMarkdown, loadItemDetail } from "@aihot/backend/publication/detail";
+import { itemFeed } from "@aihot/backend/publication/feeds";
 import { loadStoryDetail, v1HotTopics, v1Story } from "@aihot/backend/publication/stories";
 import { candidates } from "@aihot/backend/reports/edition";
 import { composeStoryDigest, DIGEST_PROMPT_VERSION, DIGEST_SYSTEM, DigestSchema } from "@aihot/backend/events/digest";
@@ -67,28 +68,28 @@ async function report(sourceId: string, group: Awaited<ReturnType<typeof story>>
 }
 
 test("source tier and event ownership are separate; mentions of an entity do not establish authority", () => {
-  const row = { body_mode: "full" as const, score: 70, timeline_at: now, source_tier: "T2", publisher_role: null, owner_entity_id: null, fact_subject: "OpenAI" };
-  const org = { ...row, source_tier: "T1_5", publisher_role: "organization", owner_entity_id: "openai", score: 60 };
+  const row = { body_mode: "full" as const, score: 70, timeline_at: now, source_tier: "T2", publisher_role: null, owner_entity_id: null, fact_subject: "吉林大学" };
+  const org = { ...row, source_tier: "T1_5", publisher_role: "organization", owner_entity_id: "jlu", score: 60 };
   const person = { ...org, publisher_role: "person", score: 90 };
   assert.equal(pickRepresentative([person, org]), org);
   const first = { ...row, source_tier: "T1", score: 40, first_party: false };
   assert.equal(pickRepresentative([org, first]), first, "T1 does not depend on the first_party flag");
-  for (const subject of [null, "Databricks", "OpenAI合作伙伴", "Sam Altman (@sama)"]) {
+  for (const subject of [null, "长春理工大学", "吉林大学合作伙伴", "张三 (@zhangsan)"]) {
     assert.equal(representativePriority({ ...org, fact_subject: subject }), 3, String(subject));
   }
-  assert.equal(representativePriority({ ...org, fact_subject: "ChatGPT" }), 1, "exact configured product alias");
-  assert.equal(representativePriority({ ...org, fact_subject: "OpenAI / Anthropic" }), 1, "explicit co-subject list");
-  assert.equal(representativePriority({ ...org, owner_entity_id: "qwen", fact_subject: "Qwen Team" }), 1, "the company under another of its own names");
-  assert.equal(representativePriority({ ...org, owner_entity_id: "world-labs", fact_subject: "AMD + World Labs" }), 1);
-  assert.equal(representativePriority({ ...org, fact_subject: "OpenAI + " }), 3, "incomplete subject list is not evidence");
+  assert.equal(representativePriority({ ...org, fact_subject: "吉大" }), 1, "exact configured alias");
+  assert.equal(representativePriority({ ...org, fact_subject: "吉林大学 / 教务处" }), 1, "explicit co-subject list");
+  assert.equal(representativePriority({ ...org, fact_subject: "吉林大学新闻网" }), 1, "the institution under another of its own names");
+  assert.equal(representativePriority({ ...org, owner_entity_id: "jlu-registrar", fact_subject: "图书馆 + 教务处" }), 1);
+  assert.equal(representativePriority({ ...org, fact_subject: "吉林大学 + " }), 3, "incomplete subject list is not evidence");
   assert.equal(representativePriority({ ...org, owner_entity_id: null }), 3);
   assert.equal(representativePriority({ ...org, owner_entity_id: "unregistered-org", fact_subject: "unregistered-org" }), 3, "equal unknown strings are not verified identity");
-  assert.equal(representativePriority({ ...org, fact_subject: "OpenAI + unregistered-org" }), 3, "an unrecognized co-subject is not silently accepted");
+  assert.equal(representativePriority({ ...org, fact_subject: "吉林大学 + 未登记机构" }), 3, "an unrecognized co-subject is not silently accepted");
   assert.equal(representativePriority({ ...row, first_party: true } as typeof row), 3, "the first_party flag never elevates a source");
 });
 
 test("mentions cannot choose a timeline origin, anchor, representative, or a latest-progress link", async () => {
-  const organization = await source("organization", "T1_5", "openai", "organization");
+  const organization = await source("organization", "T1_5", "jlu", "organization");
   const media = await source("media", "T2");
   const t1 = await source("t1", "T1");
   const g = await story();
@@ -457,3 +458,34 @@ for (const change of ["correction", "withdrawal", "detach", "addition"] as const
     }
   });
 }
+
+// A source the framework cannot fetch itself has only the plain copy the collector pushed: its page,
+// export and full feed render that copy as HTML, and the body_mode snapshot still gates it.
+test("a body that is only text is readable: page, export and full feed", async () => {
+  const s = await source("textonly", "T2");
+  await sql`UPDATE sources SET site_fulltext = true, syndicate_fulltext = true WHERE id = ${s}`;
+  const id = `${key}-${randomUUID()}`;
+  const tail = "此处是只有纯文本的正文结尾标记。";
+  const body = "校内各相关单位：请于9月30日前完成自查。".repeat(20) + tail;
+  await sql`INSERT INTO articles (id,source_id,identity_key,url,title,timeline_at,discovered_at,published_at,body_text,body_status)
+    VALUES (${id},${s},${id},${`https://example.org/${id}`},'关于做好自查工作的通知',${at(2)},${at(2)},${at(2)},${body},'ok')`;
+  await sql`INSERT INTO publications (article_id,source_id,title,summary,url,channel,first_party,timeline_at,discovered_at,published_at,sort_at,selected,eligible,visible_after,tags,body_mode,syndicate)
+    VALUES (${id},${s},'关于做好自查工作的通知','校内相关单位请注意自查通知。',${`https://example.org/${id}`},'news',true,${at(2)},${at(2)},${at(2)},${at(2)},true,true,${at(2)},${[key]},'full',true)`;
+
+  const detail = await loadItemDetail(id, "zh", now);
+  assert.equal(detail.kind, "found");
+  if (detail.kind !== "found") return;
+  assert.ok(detail.item.body, "纯文本正文也要有正文可读");
+  assert.ok(JSON.stringify(detail.item.body).includes(tail), "读到的是全文，不是摘要");
+
+  const exported = await exportMarkdown(id);
+  assert.ok(exported && exported.body.includes("## 正文") && exported.body.includes(tail), "导出也带正文");
+
+  const xml = await itemFeed("selected-full", null, { now });
+  assert.ok(xml.includes("<content:encoded>") && xml.includes(tail), "全文 RSS 带的是全文（不能被 400 字截断）");
+
+  // 边界不动：快照说 summary 就没有正文，标志之外的判断仍然生效
+  await sql`UPDATE publications SET body_mode = 'summary' WHERE article_id = ${id}`;
+  const off = await loadItemDetail(id, "zh", now);
+  assert.equal(off.kind === "found" ? off.item.body : null, null, "summary 快照下仍然没有正文");
+});

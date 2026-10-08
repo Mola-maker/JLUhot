@@ -118,8 +118,10 @@ function fullContent(r: FeedRow, aihot: string): string | null {
         ? `<p><a href="${escapeXml(url)}">视频</a></p>`
         : `<p><img src="${escapeXml(url)}" alt="${escapeXml(String(media.alt ?? ""))}"></p>`;
     }
-  } else if (r.body_html) {
-    html = exportTranslation(r) ?? r.body_html;
+  } else {
+    // A source that only gives text (a page the framework cannot fetch) has no extracted HTML to export.
+    const body = r.body_html ?? (r.body_text ? textToHtml(r.body_text) : null);
+    if (body) html = exportTranslation(r) ?? body;
   }
   if (!html) return null;
   return `${proxyBodyImages(html, true, FEED_IMAGE_SECONDS)}<p>—— 本文由 ${escapeXml(SITE.name)} 聚合整理，完整版与${escapeXml(subjectAfter("更多", "动态"))}见 <a href="${aihot}">${aihot}</a></p>`;
@@ -169,7 +171,7 @@ export async function itemFeed(kind: ItemFeedKind, category: PublicApiCategoryKe
     SELECT p.article_id AS id, p.title, p.summary, p.url, p.category, p.published_at, s.name AS source_name
       ${includeContent ? sql`, p.channel, p.syndicate, a.language, a.x_post,
         CASE WHEN p.channel = 'x' THEN tr.body_text END AS zh_text, qt.text_zh AS quoted_zh,
-        left(a.body_text, 400) AS body_text, a.body_html, tr.body_html AS tr_html, tr.complete AS tr_complete` : sql``}
+        a.body_text, a.body_html, tr.body_html AS tr_html, tr.complete AS tr_complete` : sql``}
     FROM page JOIN publications p ON p.article_id = page.article_id JOIN sources s ON s.id = p.source_id
     ${includeContent ? sql`LEFT JOIN articles a ON a.id = p.article_id AND p.syndicate
       LEFT JOIN translations tr ON tr.article_id = p.article_id AND tr.lang = 'zh' AND tr.revision >= a.revision

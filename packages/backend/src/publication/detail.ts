@@ -39,6 +39,16 @@ function withOutline(html: string): { html: string; outline: OutlineEntry[] } {
   return { html: out, outline };
 }
 
+/**
+ * The body HTML a reader gets: the extracted HTML, or — for a source that only gives text (a page the
+ * framework cannot fetch itself, so the collector pushed its copy) — that copy rendered as HTML.
+ * `body_mode` still decides whether there is a body at all: the licence and the snapshot stay in the row.
+ */
+function bodyHtmlOf(row: { body_mode: string; body_html?: string | null; body_text?: string | null }): string | null {
+  if (row.body_mode !== "full") return null;
+  return row.body_html ?? (row.body_text ? textToHtml(row.body_text) : null);
+}
+
 async function loadRow(id: string): Promise<DetailRow | null> {
   const [row] = await sql<DetailRow[]>`
     SELECT ${ITEM_COLUMNS}, a.body_html, a.body_text, a.body_status, tr.body_html AS tr_html, tr.complete AS tr_complete,
@@ -124,10 +134,13 @@ export async function loadItemDetail(id: string, language: "zh" | "original" = "
       const { text: _text, translation: _translation, ...shown } = post;
       x = shown;
     }
-  } else if (row.body_mode === "full" && row.body_html) {
-    const chinese = isChineseBody(row);
-    const zh = chinese ? { html: row.body_html, kind: "original" as const } : row.tr_html ? { html: row.tr_html, kind: "translation" as const } : null;
-    reading = readingBody(language, zh, chinese ? null : row.body_html, chinese ? true : row.tr_complete ?? false, (html) => withOutline(proxyBodyImages(html)));
+  } else {
+    const html = bodyHtmlOf(row);
+    if (html) {
+      const chinese = isChineseBody(row);
+      const zh = chinese ? { html, kind: "original" as const } : row.tr_html ? { html: row.tr_html, kind: "translation" as const } : null;
+      reading = readingBody(language, zh, chinese ? null : html, chinese ? true : row.tr_complete ?? false, (h) => withOutline(proxyBodyImages(h)));
+    }
   }
 
   let group: SiteItemDetail["group"] = null;
@@ -172,10 +185,10 @@ export async function loadItemDetail(id: string, language: "zh" | "original" = "
  * (a summary, the post where pages show it, or a full-text body).
  */
 export function markdownAvailable(row: {
-  visibility: string; source_mode: string; summary: string | null; body_mode: string; body_html?: string | null; channel: string; x_post: Record<string, any> | null;
+  visibility: string; source_mode: string; summary: string | null; body_mode: string; body_html?: string | null; body_text?: string | null; channel: string; x_post: Record<string, any> | null;
 }): boolean {
   if (row.visibility !== "public" || !hasItemPage({ visibility: row.visibility, sourceMode: row.source_mode })) return false;
-  return !!row.summary || (showsPost(row) && (!!row.x_post?.text || !!row.x_post?.media?.length || !!row.x_post?.quoted?.text)) || (row.body_mode === "full" && !!row.body_html);
+  return !!row.summary || (showsPost(row) && (!!row.x_post?.text || !!row.x_post?.media?.length || !!row.x_post?.quoted?.text)) || !!bodyHtmlOf(row);
 }
 
 export async function exportMarkdown(id: string): Promise<{ filename: string; body: string } | null> {
@@ -202,10 +215,13 @@ export async function exportMarkdown(id: string): Promise<{ filename: string; bo
     const q = post?.quoted;
     if (q?.text) lines.push(`## 引用 @${q.handle ?? ""}`, "", ...String(q.text).split("\n").map((l) => `> ${l}`), "", ...(q.url ? [q.url, ""] : []));
     if (q?.text && q.translation) lines.push("### 引用中文译文", "", ...q.translation.split("\n").map((l) => `> ${l}`), "");
-  } else if (row.body_mode === "full" && row.body_html) {
-    const translation = exportTranslation(row);
-    if (translation) lines.push("## 正文 · 中文译文", "", bodyToMarkdown(translation, row.url), "");
-    lines.push(isChineseBody(row) ? "## 正文" : "## 正文 · 原文", "", bodyToMarkdown(row.body_html, row.url), "");
+  } else {
+    const html = bodyHtmlOf(row);
+    if (html) {
+      const translation = exportTranslation(row);
+      if (translation) lines.push("## 正文 · 中文译文", "", bodyToMarkdown(translation, row.url), "");
+      lines.push(isChineseBody(row) ? "## 正文" : "## 正文 · 原文", "", bodyToMarkdown(html, row.url), "");
+    }
   }
   return { filename: `${SITE.mcpPrefix}-${row.id}.md`, body: lines.join("\n").replace(/\n{3,}/g, "\n\n") };
 }
