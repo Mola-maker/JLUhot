@@ -256,3 +256,11 @@ Content-Type: application/json
 - `sourceId` 不存在时会自动建一个 `external` 信源，默认不进公开页面：到后台把它的参与方式改成 `editorial` 才会出现在站上。
 - 在后台暂停信源后，推送接口返回 409，不再接收新文章；恢复信源后可以继续推送。
 - 条目的 `raw._aihot.backfill` 为 `true` 时按历史回灌处理（不进入“今天”、不推送）。
+
+推送的每条可以有 `excerpt` 与 `bodyText`：前者是摘要，后者是正文。带上正文的条目会被记为
+"正文已确认"，框架也就不再去抓它（`content/extract.ts` 跳过 `body_status = 'ok'`）。这对
+框架自己到不了的来源是必须的——校园内网、登录墙后面的页面，只有采集端能把正文带回来；
+而没有正文的条目会被搁置（`relevance` 停在 `unknown`），既不公开也不拦截。
+
+吉大 OA（`oa.jlu.edu.cn`）就是这个用法：采集器在连着校园网的宿主机上跑，
+见 `deploy/oa-collector.py` 的文件头。

@@ -1,6 +1,9 @@
 // External collection reports (POST /api/ingest/items). Same identity rules and timeline
 // rule as every other entrance: old or future-dated items and explicit backfill never count as
 // today's news and are never pushed. Unknown sources are created isolated, awaiting an operator.
+// A report may carry the copy it already fetched (excerpt, bodyText): a source whose pages the
+// framework cannot reach itself (a campus intranet, a login wall) still needs evidence to be
+// judged, and a confirmed body also stops extract.ts from trying to fetch it again.
 import { sql } from "../db.ts";
 import { upsertMaterial } from "../content/materials.ts";
 import { queueProcessing } from "../jobs/content.ts";
@@ -21,7 +24,17 @@ interface ItemIn {
   url?: unknown;
   publishedAt?: unknown;
   author?: unknown;
+  excerpt?: unknown;
+  bodyText?: unknown;
   raw?: { _aihot?: { backfill?: boolean; baseline?: boolean } } & Record<string, unknown>;
+}
+
+/** The ceiling the prompt builder also uses (editorial/writing.ts MAX_BODY_CHARS): one report cannot flood a row. */
+const MAX_PUSHED_TEXT = 60_000;
+
+/** A pushed copy field: a non-empty trimmed string, or null. */
+function copyField(value: unknown, limit: number): string | null {
+  return typeof value === "string" && value.trim() ? value.trim().slice(0, limit) : null;
 }
 
 export async function ingestItems(body: { sourceId?: unknown; sourceName?: unknown; items?: unknown }): Promise<{ ok: true; created: number }> {
@@ -57,6 +70,8 @@ export async function ingestItems(body: { sourceId?: unknown; sourceName?: unkno
       url: rawUrl,
       title,
       author: typeof it.author === "string" ? it.author.slice(0, 200) : null,
+      excerpt: copyField(it.excerpt, 2_000),
+      bodyText: copyField(it.bodyText, MAX_PUSHED_TEXT),
       publishedAt: published && Number.isFinite(published.getTime()) ? published : null,
       raw: it.raw ?? null,
       via: "ingest",
