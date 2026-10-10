@@ -24,7 +24,7 @@ const provider = await stub((_hit, request) => {
   const text = body.messages[1].content as string;
   if (text.includes("【报道 A】")) return { choices: [{ message: { content: JSON.stringify({ a: "发布", b: "发布", relation: "SAME_OCCURRENCE", difference: "", confidence: 1 }) } }] };
   const ids = [...text.matchAll(/【候选 (C\d+)】/g)].map(m => m[1]);
-  return { choices: [{ message: { content: JSON.stringify({ query: "新模型发布", decisions: (response === "missing" ? [] : ids).map(id => ({ id, relation: "SAME_OCCURRENCE", confidence: 1, note: "" })), selection: { addsValue: true, reason: "fixture news" } }) } }] };
+  return { choices: [{ message: { content: JSON.stringify({ query: "新通知发布", decisions: (response === "missing" ? [] : ids).map(id => ({ id, relation: "SAME_OCCURRENCE", confidence: 1, note: "" })), selection: { addsValue: true, reason: "fixture news" } }) } }] };
 });
 for (const name of ["DEEPSEEK", "XIAOMI_MIMO"]) {
   process.env[`${name}_BASE_URL`] = `${provider.url}/v1`;
@@ -34,9 +34,9 @@ const embeddings = await embeddingsStub();
 let factId: number;
 
 async function report(suffix: string, composite = false) {
-  const { articleId } = await upsertMaterial({ sourceId, url: `https://example.org/group-${T}/${suffix}`, title: `新模型发布${T}`, bodyText: "今日发布新模型和价格。", bodyStatus: "ok", via: "fetch", publishedAt: new Date() });
+  const { articleId } = await upsertMaterial({ sourceId, url: `https://example.org/group-${T}/${suffix}`, title: `新通知发布${T}`, bodyText: "今日发布新通知和时间安排。", bodyStatus: "ok", via: "fetch", publishedAt: new Date() });
   await sql`INSERT INTO analyses (article_id,input_revision,origin,relevance,category,title_zh,summary_zh,score,selected,output)
-    VALUES (${articleId},1,'rule','pass','ai-models',${`新模型发布${T} ${suffix}`},${`新模型发布和价格${T} ${suffix}`},80,true,${sql.json({ scope: composite ? "composite" : "single", fact: { title: "新模型发布", subject: "实验室", action: "发布", object: "模型" } })})`;
+    VALUES (${articleId},1,'rule','pass','notices',${`新模型发布${T} ${suffix}`},${`新通知发布和时间安排${T} ${suffix}`},80,true,${sql.json({ scope: composite ? "composite" : "single", fact: { title: "新通知发布", subject: "教务处", action: "发布", object: "通知" } })})`;
   await sql`UPDATE articles SET processing_state='analyzed' WHERE id=${articleId}`;
   await publishArticle(articleId);
   return articleId;
@@ -45,8 +45,8 @@ async function report(suffix: string, composite = false) {
 before(async () => {
   await sql`INSERT INTO sources (id,name,kind,tier,participation_mode,next_fetch_at) VALUES (${sourceId},'Group reliability','rss','T1','editorial','2100-01-01')`;
   const id = await report("root");
-  const [story] = await sql`INSERT INTO stories (public_id,title) VALUES (${randomUUID()},'新模型发布') RETURNING id`;
-  const [fact] = await sql`INSERT INTO facts (public_id,story_id,title) VALUES (${`f-${T}`},${story!.id},'新模型发布') RETURNING id`;
+  const [story] = await sql`INSERT INTO stories (public_id,title) VALUES (${randomUUID()},'新通知发布') RETURNING id`;
+  const [fact] = await sql`INSERT INTO facts (public_id,story_id,title) VALUES (${`f-${T}`},${story!.id},'新通知发布') RETURNING id`;
   factId = Number(fact!.id);
   await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${factId},${id},'primary')`;
   await groupArticle(id);

@@ -58,7 +58,7 @@ async function report(r: Report): Promise<string> {
   });
   await sql`UPDATE articles SET discovered_at = ${r.at}, timeline_at = ${r.at}, grouped_at = now() WHERE id = ${articleId}`;
   await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, score, selected, subjects, tags)
-            VALUES (${articleId}, 1, 'rule', 'pass', ${r.category ?? "ai-models"}, ${r.title}, ${`摘要 ${n}`}, ${r.score ?? 80}, ${r.selected ?? true}, ${r.subjects ?? []}, ${[r.category === "ai-products" ? "产品更新" : r.category === "paper" ? "论文/研究" : r.category === "tip" ? "教程/实践" : r.category === "industry" ? "行业动态" : r.category === "opinion" ? "大佬观点" : "模型发布", ...(r.tags ?? [])]})`;
+            VALUES (${articleId}, 1, 'rule', 'pass', ${r.category ?? "notices"}, ${r.title}, ${`摘要 ${n}`}, ${r.score ?? 80}, ${r.selected ?? true}, ${r.subjects ?? []}, ${[r.category === "campus" ? "学校要闻" : r.category === "research" ? "科研/学术" : r.category === "admissions" ? "招生/就业" : r.category === "student" ? "学生/社团" : r.category === "people" ? "人物/荣誉" : "通知公告", ...(r.tags ?? [])]})`;
   if (r.fact) await sql`INSERT INTO fact_articles (fact_id, article_id, role) VALUES (${r.fact}, ${articleId}, 'report')`;
   await publishArticle(articleId, { releasedAt: new Date(r.at.getTime() + 60_000) });
   return articleId;
@@ -91,63 +91,60 @@ async function members(slug: string): Promise<string[]> {
 }
 
 test("a company topic takes the articles about it, not the ones that only mention it", async () => {
-  const about = await report({ at: hoursAgo(30), title: `Claude Code 推出插件 ${T}`, subjects: ["anthropic"] });
-  const product = await report({ at: hoursAgo(31), title: `Sonnet 新版上线 ${T}`, subjects: ["anthropic"] });
-  const english = await report({ at: hoursAgo(32), title: `新模型发布 ${T}`, originalTitle: `Anthropic launches a model ${T}`, subjects: ["anthropic", "openai"] });
-  const subpoena = await report({ at: hoursAgo(33), title: `加州检察长向 OpenAI 发出传票 ${T}`, subjects: ["openai", "anthropic", "hugging-face"] });
-  const lowerCase = await report({ at: hoursAgo(34), title: `openai 公布新的安全框架 ${T}`, subjects: ["openai", "anthropic"] });
-  const pact = await report({ at: hoursAgo(35), title: `二十余家科技公司签署安全协议 ${T}`, subjects: ["openai", "anthropic", "google"] });
-  const metadata = await report({ at: hoursAgo(36), title: `Metadata 标准发布，OpenAI 参与 ${T}`, subjects: ["meta", "openai"] });
-  const adjacent = await report({ at: hoursAgo(37), title: `发布Meta的新模型 ${T}`, subjects: ["meta", "openai"] });
-  const headline = await report({ at: hoursAgo(38), title: `Anthropic 被一篇盘点提到 ${T}`, subjects: ["google"] });
-  const agent = await report({ at: hoursAgo(39), title: `智能体框架发布 ${T}`, tags: ["Agent"] });
+  const about = await report({ at: hoursAgo(30), title: `教务处 发布选课安排 ${T}`, subjects: ["jlu-registrar"] });
+  const product = await report({ at: hoursAgo(31), title: `本科生院 新流程上线 ${T}`, subjects: ["jlu-registrar"] });
+  const english = await report({ at: hoursAgo(32), title: `新通知发布 ${T}`, originalTitle: `Jilin University issues a notice ${T}`, subjects: ["jlu", "jlu-registrar"] });
+  const visit = await report({ at: hoursAgo(33), title: `教育部调研组到吉林大学考察 ${T}`, subjects: ["jlu", "jlu-registrar", "jlu-library"] });
+  const lowerCase = await report({ at: hoursAgo(34), title: `jlu 公布新的管理规定 ${T}`, subjects: ["jlu", "jlu-registrar"] });
+  const pact = await report({ at: hoursAgo(35), title: `多家单位签署合作协议 ${T}`, subjects: ["jlu", "jlu-registrar", "jlu-library"] });
+  const jlusa = await report({ at: hoursAgo(36), title: `JLUSA 年会举办，教务处参与 ${T}`, subjects: ["jlu", "jlu-registrar"] });
+  const adjacent = await report({ at: hoursAgo(37), title: `发布JLU的新规定 ${T}`, subjects: ["jlu", "jlu-registrar"] });
+  const headline = await report({ at: hoursAgo(38), title: `教务处 被一篇盘点提到 ${T}`, subjects: ["jlu-library"] });
+  const lecture = await report({ at: hoursAgo(39), title: `余瑞璜大讲堂新一期预告 ${T}`, tags: ["学术讲座"] });
 
-  const anthropic = await members("anthropic");
-  for (const id of [about, product, english]) assert.ok(anthropic.includes(id), "about Anthropic");
-  for (const id of [subpoena, lowerCase, pact, headline]) assert.ok(!anthropic.includes(id), "only mentions Anthropic");
-  const openai = await members("openai");
-  for (const id of [subpoena, lowerCase, metadata]) assert.ok(openai.includes(id), "about OpenAI");
-  for (const id of [english, pact]) assert.ok(!openai.includes(id), "only mentions OpenAI");
-  const meta = await members("meta");
-  assert.ok(meta.includes(adjacent), "Meta next to Chinese text");
-  assert.ok(!meta.includes(metadata), "Metadata is not Meta");
-  assert.ok((await members("agent")).includes(agent), "a technical direction takes its tag");
+  const registrar = await members("registrar");
+  for (const id of [about, product, jlusa]) assert.ok(registrar.includes(id), "about the registrar");
+  for (const id of [english, visit, lowerCase, pact, headline]) assert.ok(!registrar.includes(id), "only mentions the registrar");
+  const jlu = await members("jlu");
+  for (const id of [english, visit, lowerCase, adjacent]) assert.ok(jlu.includes(id), "about JLU");
+  for (const id of [pact, jlusa]) assert.ok(!jlu.includes(id), "only mentions JLU, or JLUSA is not JLU");
+  assert.ok((await members("lectures")).includes(lecture), "a direction takes its tag");
 
   // The article page names the topics it belongs to.
   const topicsOf = async (id: string) => {
     const res = await app.inject({ method: "GET", url: `/api/site/items/${id}` });
     return (JSON.parse(res.body) as { topics: Array<{ slug: string }> }).topics.map((t) => t.slug);
   };
-  assert.deepEqual(await topicsOf(about), ["anthropic", "model-releases"]);
-  assert.deepEqual(await topicsOf(subpoena), ["openai", "model-releases"]);
-  assert.deepEqual(await topicsOf(pact), ["model-releases"]);
-  assert.deepEqual(await topicsOf(agent), ["agent", "model-releases"]);
+  assert.deepEqual(await topicsOf(about), ["registrar", "notices"]);
+  assert.deepEqual(await topicsOf(visit), ["jlu", "notices"]);
+  assert.deepEqual(await topicsOf(pact), ["notices"]);
+  assert.deepEqual(await topicsOf(lecture), ["lectures", "notices"]);
 });
 
 test("a story page names the topics of its reports", async () => {
-  const launch = await story(`智能体框架 V2 发布 ${T}`);
-  await report({ source: OFFICIAL, at: hoursAgo(26), title: `智能体框架 V2 发布 ${T}`, tags: ["Agent"], fact: await fact(launch.id, "发布 V2") });
-  assert.deepEqual(await topicsOfStory(launch.id), [{ slug: "agent", name: "Agent 智能体" }, { slug: "model-releases", name: "模型发布" }]);
+  const launch = await story(`余瑞璜大讲堂第七十四期 ${T}`);
+  await report({ source: OFFICIAL, at: hoursAgo(26), title: `余瑞璜大讲堂第七十四期 ${T}`, tags: ["学术讲座"], fact: await fact(launch.id, "举办第七十四期") });
+  assert.deepEqual(await topicsOfStory(launch.id), [{ slug: "lectures", name: "学术讲座" }, { slug: "notices", name: "通知公告" }]);
 });
 
 test("withdrawn articles stay out of lists and counts", async () => {
-  const kept = await report({ at: hoursAgo(5), title: `Kimi 发布新模型 ${T}`, subjects: ["kimi"] });
-  const withdrawn = await report({ at: hoursAgo(4), title: `Kimi 撤回的消息 ${T}`, subjects: ["kimi"] });
+  const kept = await report({ at: hoursAgo(5), title: `法学院 举办学术会议 ${T}`, subjects: ["jlu-law"] });
+  const withdrawn = await report({ at: hoursAgo(4), title: `法学院 撤回的消息 ${T}`, subjects: ["jlu-law"] });
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${withdrawn}`;
 
-  const data = await page("kimi");
+  const data = await page("law");
   assert.deepEqual(ids(data.items), [kept]);
   assert.equal(data.topic.total, 1);
-  const summary = (await listTopicSummaries()).topics.find((t) => t.slug === "kimi")!;
-  assert.equal(summary.latest?.title, `Kimi 发布新模型 ${T}`, "the index shows the newest public article");
+  const summary = (await listTopicSummaries()).topics.find((t) => t.slug === "law")!;
+  assert.equal(summary.latest?.title, `法学院 举办学术会议 ${T}`, "the index shows the newest public article");
 });
 
 test("every topic has a page; unknown topics and pages past the end have none", async () => {
-  const empty = await page("cursor");
+  const empty = await page("alumni");
   assert.equal(empty.topic.indexable, false, "a topic without content is not indexed");
   assert.deepEqual(empty.items, []);
   assert.equal(await loadTopicPage("not-a-topic", 1, new Date()), null);
-  assert.equal(await loadTopicPage("cursor", 2, new Date()), null);
+  assert.equal(await loadTopicPage("alumni", 2, new Date()), null);
   const index = await app.inject({ method: "GET", url: "/api/site/topics" });
   const body = JSON.parse(index.body) as { groups: Array<{ key: string }>; topics: Array<{ slug: string }> };
   assert.deepEqual(body.groups.map((g) => g.key), ["company", "field", "genre"]);

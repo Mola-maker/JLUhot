@@ -6,17 +6,36 @@
 @source "../../../modules/*/{web.tsx,web/**}";
 
 /* ---------------------------------------------------------------------------
-   Design tokens: warm off-white paper, ink text, one teal accent (cyan in
-   dark), hairline borders, no gradients.
-   Components use the semantic names below; values change per theme only.
+   Design tokens: MolaMaker 主站的浅蓝纸质风格——淡蓝白底、藏青墨色、蓝色主调、
+   柔和渐变与 2px 底边按钮。Components use the semantic names below; values
+   change per theme only.
    --------------------------------------------------------------------------- */
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 /* Touch screens (no hover): pressed states for rows and cards. */
 @custom-variant touch (@media (hover: none));
 
+/* MolaMaker 主站的艺术字体：报头题记、关于页大标题等点缀用。Yozai 只覆盖汉字区间，Outfit 只覆盖拉丁。 */
+@font-face {
+  font-family: "Yozai";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/yozai/Yozai-Regular.woff2") format("woff2");
+  unicode-range: U+2E80-2FDF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FF65;
+}
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/outfit/Outfit-Light.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0100-024F, U+2000-206F;
+}
+
 @theme {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Source Han Sans SC", "Noto Sans CJK SC", "PingFang SC", "Hiragino Sans GB", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Outfit", "Yozai", system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 
   /* Semantic colours. */
@@ -61,7 +80,7 @@
   --radius-mark: 5px;
   --radius-control: 8px;
   --radius-tile: 10px;
-  --radius-card: 12px;
+  --radius-card: 13px;
   --radius-panel: 14px;
   --radius-sheet: 16px;
 
@@ -88,54 +107,54 @@
   --gutter-l: max(16px, env(safe-area-inset-left));
   --gutter-r: max(16px, env(safe-area-inset-right));
   color-scheme: light;
-  --bg: #faf9f6;
-  --bg-sunk: #f3f3ef;
-  --bg-muted: #e9ede9;
+  --bg: #f8fbff;
+  --bg-sunk: #edf5ff;
+  --bg-muted: #e3edff;
   --surface: #ffffff;
-  --surface-2: #fdfdfb;
+  --surface-2: #fbfdff;
   --raised: #ffffff;
-  --sidebar: #fdfdfb;
-  --daybar: #f0f2ee;
-  --field: #eef1ed;
-  --ink: #202a30;
-  --ink-2: #303c42;
-  --ink-3: #59656b;
-  --ink-4: #657176;
-  --line: #dfe4e1;
-  --line-strong: #d1d9d5;
-  --line-soft: #e9ede9;
-  --accent: #176b75;
-  --accent-ink: #145f68;
-  --accent-soft: rgba(23, 107, 117, 0.08);
-  --accent-softer: rgba(23, 107, 117, 0.05);
+  --sidebar: #fbfdff;
+  --daybar: #edf5ff;
+  --field: #eef4ff;
+  --ink: #254573;
+  --ink-2: #35517e;
+  --ink-3: #566f98;
+  --ink-4: #7d90b0;
+  --line: #d2e2ff;
+  --line-strong: #9bbaf0;
+  --line-soft: #e3edff;
+  --accent: #365ca4;
+  --accent-ink: #274980;
+  --accent-soft: #edf3ff;
+  --accent-softer: rgba(54, 92, 164, 0.05);
   --accent-contrast: #ffffff;
-  --note: #526f72;
-  --hot: #b3402a;
-  --hot-soft: rgba(179, 64, 42, 0.08);
-  --amber: #b8873a;
-  --amber-ink: #7c5a24;
-  --amber-soft: rgba(184, 135, 58, 0.1);
-  --ok: #2f7d5c;
-  --ok-soft: rgba(47, 125, 92, 0.1);
-  --ok-ink: #2a6e51;
-  --rank-1: #b3402a;
-  --rank-2: #a3642f;
-  --rank-3: #96702e;
-  --rank-rest: #6b7684;
-  --shadow-card: 0 1px 2px rgba(32, 42, 48, 0.025);
-  --shadow-card-hover: 0 3px 12px rgba(32, 42, 48, 0.055);
-  --shadow-soft: 0 4px 12px rgba(28, 39, 51, 0.06);
-  --shadow-thumb: 0 1px 2px rgba(28, 39, 51, 0.1), 0 1px 1px rgba(28, 39, 51, 0.04);
-  --shadow-pop: 0 12px 32px rgba(28, 39, 51, 0.12);
-  --prose-ink: #26323a;
-  --code-bg: #f6f7f4;
-  --code-keyword: #006d77;
-  --code-string: #2f6f44;
-  --code-number: #9a6700;
-  --code-title: #6f42c1;
-  --code-variable: #a13d10;
-  --code-meta: #b42348;
-  --selection: rgba(23, 107, 117, 0.16);
+  --note: #566f98;
+  --hot: #c24672;
+  --hot-soft: rgba(194, 70, 114, 0.08);
+  --amber: #936215;
+  --amber-ink: #7a5011;
+  --amber-soft: rgba(147, 98, 21, 0.1);
+  --ok: #137762;
+  --ok-soft: rgba(19, 119, 98, 0.1);
+  --ok-ink: #0f6a56;
+  --rank-1: #c24672;
+  --rank-2: #936215;
+  --rank-3: #365ca4;
+  --rank-rest: #7d90b0;
+  --shadow-card: 0 8px 28px rgba(56, 96, 156, 0.047), 0 1px 2px rgba(56, 96, 156, 0.03);
+  --shadow-card-hover: 0 5px 22px rgba(56, 96, 156, 0.08);
+  --shadow-soft: 0 5px 22px rgba(56, 96, 156, 0.06);
+  --shadow-thumb: 0 1px 2px rgba(56, 96, 156, 0.1), 0 1px 1px rgba(56, 96, 156, 0.04);
+  --shadow-pop: 0 14px 50px rgba(35, 69, 125, 0.16);
+  --prose-ink: #2c4a77;
+  --code-bg: #f2f7ff;
+  --code-keyword: #315dae;
+  --code-string: #137762;
+  --code-number: #936215;
+  --code-title: #7a5abf;
+  --code-variable: #b3561e;
+  --code-meta: #c24672;
+  --selection: rgba(54, 92, 164, 0.14);
 }
 
 @media (min-width: 961px) {
@@ -146,54 +165,54 @@
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #13191c;
-  --bg-sunk: #182024;
-  --bg-muted: #202a2f;
-  --surface: #1a2226;
-  --surface-2: #1d272b;
-  --raised: #202a2f;
-  --sidebar: #161e21;
-  --daybar: #182024;
+  --bg: #111c30;
+  --bg-sunk: #172640;
+  --bg-muted: #1b2e4d;
+  --surface: #172640;
+  --surface-2: #1b2e4d;
+  --raised: #213451;
+  --sidebar: #131f36;
+  --daybar: #172640;
   --field: rgba(255, 255, 255, 0.06);
-  --ink: #e7eceb;
-  --ink-2: #d2dada;
-  --ink-3: #a5b0b3;
-  --ink-4: #89979d;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.12);
-  --line-soft: rgba(255, 255, 255, 0.06);
-  --accent: #12ccd8;
-  --accent-ink: #2ce2e8;
-  --accent-soft: rgba(18, 204, 216, 0.12);
-  --accent-softer: rgba(18, 204, 216, 0.06);
-  --accent-contrast: #000000;
-  --note: #8fb8a8;
-  --hot: #d86a52;
-  --hot-soft: rgba(216, 106, 82, 0.12);
-  --amber: #d3b26a;
-  --amber-ink: #d3b26a;
-  --amber-soft: rgba(211, 178, 106, 0.12);
-  --ok: #5fc79a;
-  --ok-soft: rgba(95, 199, 154, 0.12);
-  --ok-ink: #7fd1ad;
-  --rank-1: #d86a52;
-  --rank-2: #d18a5e;
-  --rank-3: #d3b26a;
-  --rank-rest: #7b869a;
-  --shadow-card: none;
-  --shadow-card-hover: none;
-  --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.35);
+  --ink: #e4edfc;
+  --ink-2: #cdd9f0;
+  --ink-3: #adbedc;
+  --ink-4: #91a3c2;
+  --line: #344b71;
+  --line-strong: #5475a5;
+  --line-soft: #2a3f61;
+  --accent: #a3c4ff;
+  --accent-ink: #c6daff;
+  --accent-soft: #233e63;
+  --accent-softer: rgba(163, 196, 255, 0.06);
+  --accent-contrast: #132343;
+  --note: #91a3c2;
+  --hot: #ffa7c1;
+  --hot-soft: rgba(255, 167, 193, 0.12);
+  --amber: #f0c67f;
+  --amber-ink: #f0c67f;
+  --amber-soft: rgba(240, 198, 127, 0.12);
+  --ok: #8ee1c9;
+  --ok-soft: rgba(142, 225, 201, 0.12);
+  --ok-ink: #a5e8d4;
+  --rank-1: #ffa7c1;
+  --rank-2: #f0c67f;
+  --rank-3: #a3c4ff;
+  --rank-rest: #91a3c2;
+  --shadow-card: 0 8px 28px rgba(3, 9, 21, 0.15);
+  --shadow-card-hover: 0 5px 22px rgba(3, 9, 21, 0.2);
+  --shadow-soft: 0 5px 22px rgba(3, 9, 21, 0.15);
   --shadow-thumb: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.45);
-  --prose-ink: #d7dfdf;
-  --code-bg: #10151c;
-  --code-keyword: #78dce8;
-  --code-string: #a9dc76;
-  --code-number: #ffd866;
-  --code-title: #ab9df2;
-  --code-variable: #fc9867;
-  --code-meta: #ff6188;
-  --selection: rgba(18, 204, 216, 0.22);
+  --shadow-pop: 0 14px 50px rgba(3, 9, 21, 0.36);
+  --prose-ink: #cdd9f0;
+  --code-bg: #0e1727;
+  --code-keyword: #a3c4ff;
+  --code-string: #8ee1c9;
+  --code-number: #f0c67f;
+  --code-title: #c4b5fd;
+  --code-variable: #f0a377;
+  --code-meta: #ffa7c1;
+  --selection: rgba(163, 196, 255, 0.22);
 }
 
 @layer base {
@@ -329,6 +348,51 @@
     box-shadow: var(--shadow-card-hover);
     border-color: var(--line-strong);
     transform: translateY(-1px);
+  }
+}
+
+/* MolaMaker 主站按钮：浅蓝渐变胶囊、内高光加 2px 底边，悬停变成实心蓝。 */
+@utility btn-mola {
+  border: 1px solid color-mix(in srgb, var(--accent) 62%, var(--surface));
+  background: linear-gradient(112deg, var(--surface) 6%, var(--bg) 64%, var(--accent-soft));
+  color: var(--accent);
+  letter-spacing: 0.025em;
+  box-shadow: inset 0 1px 0 var(--surface), 0 2px 0 color-mix(in srgb, var(--accent) 34%, var(--surface)), 0 4px 9px color-mix(in srgb, var(--accent) 9%, transparent);
+  &:hover {
+    color: var(--accent-contrast);
+    background: linear-gradient(112deg, color-mix(in srgb, var(--accent) 88%, #ffffff), var(--accent));
+    border-color: var(--accent-ink);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 2px 0 color-mix(in srgb, var(--accent-ink) 82%, #0d2548), 0 5px 16px color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+  &:active {
+    box-shadow: inset 0 2px 4px rgba(19, 37, 72, 0.15), 0 1px 0 color-mix(in srgb, var(--accent) 34%, var(--surface));
+  }
+  &:disabled {
+    color: var(--ink-4);
+    background: var(--bg-sunk);
+    border-color: var(--line);
+    box-shadow: none;
+  }
+}
+@utility btn-mola-secondary {
+  border: 1px solid var(--line-strong);
+  background: linear-gradient(180deg, var(--surface), var(--bg-sunk));
+  color: var(--accent);
+  letter-spacing: 0.025em;
+  box-shadow: inset 0 1px 0 var(--surface), 0 2px 0 color-mix(in srgb, var(--line-strong) 80%, var(--surface));
+  &:hover {
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    border-color: var(--line-strong);
+  }
+  &:active {
+    box-shadow: inset 0 2px 4px rgba(19, 37, 72, 0.12), 0 1px 0 color-mix(in srgb, var(--line-strong) 80%, var(--surface));
+  }
+  &:disabled {
+    color: var(--ink-4);
+    background: var(--bg-sunk);
+    border-color: var(--line);
+    box-shadow: none;
   }
 }
 

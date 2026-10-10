@@ -26,8 +26,8 @@ const provider = await stub((_hit, req) => {
   const content =
     step === "prefilter" ? { label: "PASS", reason: "测试" }
     : step === "score" ? { attentionScore: SELECTING_SCORE }
-    : step === "understand" ? { itemType: "product_launch", authorRole: "principal", tags: ["产品更新"], editorialJudgment: "理由", titleZh: "一个模型的标题", summaryZh: "一个模型写的摘要。第二句。" }
-    : step === "structure" ? { category: "ai-products", tags: ["产品更新"], subjects: [], fact: null }
+    : step === "understand" ? { itemType: "campus_event", authorRole: "principal", tags: ["学校要闻"], editorialJudgment: "理由", titleZh: "一条通知的标题", summaryZh: "一条通知写的摘要。第二句。" }
+    : step === "structure" ? { category: "campus", tags: ["学校要闻"], subjects: [], fact: null }
     : "title_zh: 标题\nsummary_zh: 摘要。";
   return { id: `stub-${seen.length}`, choices: [{ message: { content: typeof content === "string" ? content : JSON.stringify(content) } }], usage: { prompt_tokens: 1, completion_tokens: 1 } };
 });
@@ -49,7 +49,7 @@ test("one model runs the prefilter, both scores, the writing and the structure",
   } as never);
   const res = await analyzeArticle(articleId);
   assert.equal(res!.output!.selected, true);
-  assert.equal(res!.output!.titleZh, "一个模型的标题");
+  assert.equal(res!.output!.titleZh, "一条通知的标题");
   assert.deepEqual(seen.map((r) => r.step).sort(), ["prefilter", "score", "score", "structure", "understand"]);
   assert.ok(seen.every((r) => r.model === "one-model"), "every request names the configured model");
   const services = await sql<{ service: string }[]>`SELECT DISTINCT service FROM receipts WHERE subject LIKE ${`article:${articleId}%`}`;

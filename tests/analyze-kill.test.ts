@@ -27,8 +27,8 @@ const provider = await stub(async (_hit, request) => {
   }
   const content = step === "prefilter" ? { label: "PASS", reason: "AI model release" }
     : step === "score" ? { attentionScore: SELECTING_SCORE }
-      : step === "structure" ? { category: "ai-models", tags: ["模型发布"], subjects: [], fact: { title: "新模型发布" } }
-        : { itemType: "model_release", authorRole: "principal", tags: ["模型发布"], editorialJudgment: "模型有明确的能力提升", titleZh: `新模型发布 ${T}`, summaryZh: "模型发布并提供了评测和价格。" };
+      : step === "structure" ? { category: "notices", tags: ["通知公告"], subjects: [], fact: { title: "新通知发布" } }
+        : { itemType: "notice_announcement", authorRole: "principal", tags: ["通知公告"], editorialJudgment: "安排有明确的变化", titleZh: `新通知发布 ${T}`, summaryZh: "通知发布并给出了时间和适用范围。" };
   return { id: `stub-${calls.length}`, choices: [{ message: { content: JSON.stringify(content) } }], usage: { prompt_tokens: 10, completion_tokens: 10, total_tokens: 20 } };
 });
 

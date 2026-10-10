@@ -35,7 +35,7 @@ function Masthead({ report, index, quiet }: { report: ReportDetail; index: Repor
     <header className="pt-5 lg:pt-0">
       <div className="flex items-center justify-between gap-4 text-[12px] text-ink-4">
         <span className="num">{dateLine(report.kind, report.key)}</span>
-        <span className="hidden tracking-[0.3em] @[640px]:inline">{MOTTO[report.kind]}</span>
+        <span className="hidden font-display text-[15px] tracking-[0.3em] @[640px]:inline">{MOTTO[report.kind]}</span>
         <span>{EDITION[report.kind]}</span>
       </div>
 
@@ -47,7 +47,7 @@ function Masthead({ report, index, quiet }: { report: ReportDetail; index: Repor
             </span>
             <Nameplate which={report.kind} className="block h-[44px] w-auto @[520px]:h-[58px] @[880px]:h-[74px] @[1040px]:h-[84px]" />
           </h1>
-          <p className="mt-3 text-[11.5px] tracking-[0.36em] text-ink-4 @[880px]:mt-4 @[880px]:text-[12.5px]">{REPORTS.imprint}</p>
+          <p className="mt-3 font-display text-[12.5px] tracking-[0.36em] text-ink-4 @[880px]:mt-4 @[880px]:text-[13.5px]">{REPORTS.imprint}</p>
         </div>
         {/* 报眼: the box beside the nameplate, as a Chinese daily sets it: the issue and the date in the
             nameplate's dots, and on wider paper the issue calendar beside them. */}

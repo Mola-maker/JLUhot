@@ -17,7 +17,7 @@ before(async () => {
 });
 
 async function add(suffix: string, direct: string, body: string, options: {
-  title?: string; age?: number; channel?: "news" | "x"; category?: "ai-models" | "paper"; tags?: string[];
+  title?: string; age?: number; channel?: "news" | "x"; category?: "notices" | "research"; tags?: string[];
   visibility?: string; eligible?: boolean; future?: boolean; noSearchRow?: boolean;
 } = {}) {
   const at = new Date(+now - (options.age ?? 60) * 1000);
@@ -25,12 +25,11 @@ async function add(suffix: string, direct: string, body: string, options: {
     VALUES (${id(suffix)}, ${T}, ${id(suffix)}, ${`https://example.org/${id(suffix)}`}, ${options.title ?? "neutral"}, ${at}, ${at})`;
   await sql`INSERT INTO publications (article_id, title, source_id, channel, category, tags, url, discovered_at, timeline_at, sort_at,
     selected, eligible, visibility, visible_after, search_text)
-    VALUES (${id(suffix)}, ${options.title ?? "neutral"}, ${T}, ${options.channel ?? "news"}, ${options.category ?? "ai-models"}, ${options.tags ?? []},
+    VALUES (${id(suffix)}, ${options.title ?? "neutral"}, ${T}, ${options.channel ?? "news"}, ${options.category ?? "notices"}, ${options.tags ?? []},
       ${`https://example.org/${id(suffix)}`}, ${at}, ${at}, ${at}, ${options.future ?? false}, ${options.eligible ?? true},
       ${options.visibility ?? "public"}, ${options.future ? new Date(+now + 60_000) : at}, ${direct})`;
   if (!options.noSearchRow) await sql`INSERT INTO pool_search (article_id, direct, body) VALUES (${id(suffix)}, ${direct}, ${body})`;
 }
-
 test("short and multi-term relevance keep cross-field AND and deterministic score ties", async () => {
   await add("title", "zx qy", "zx qy", { title: "ZX QY", age: 100 });
   await add("cross-a", "zx", "qy", { age: 50 });
@@ -50,24 +49,24 @@ test("short and multi-term relevance keep cross-field AND and deterministic scor
 });
 
 test("company relevance retains tag-only candidates, boosts and unique totals", async () => {
-  await add("company-both", "openai", "openai", { title: "OpenAI", tags: ["entity:openai"], age: 100 });
-  await add("company-tag", "", "", { tags: ["entity:openai"], noSearchRow: true, age: 1 });
-  await add("company-text", "openai qy", "openai", { title: "OpenAI", age: 60 });
-  await add("company-low", "openai", "", { age: 1 });
-  await add("company-withdrawn", "openai", "openai", { tags: ["entity:openai"], visibility: "withdrawn" });
-  const company = await loadPool(query("OpenAI"));
+  await add("company-both", "吉林大学", "吉林大学", { title: "吉林大学", tags: ["entity:jlu"], age: 100 });
+  await add("company-tag", "", "", { tags: ["entity:jlu"], noSearchRow: true, age: 1 });
+  await add("company-text", "吉林大学 qy", "吉林大学", { title: "吉林大学", age: 60 });
+  await add("company-low", "吉林大学", "", { age: 1 });
+  await add("company-withdrawn", "吉林大学", "吉林大学", { tags: ["entity:jlu"], visibility: "withdrawn" });
+  const company = await loadPool(query("吉林大学"));
   assert.deepEqual(company.items.map(item => item.id), ["company-both", "company-tag", "company-text", "company-low"].map(id));
   assert.equal(company.total, 4, "the text-and-tag candidate counts once");
-  const multi = await loadPool(query("openai qy"));
-  assert.deepEqual(multi.items.map(item => item.id), [id("company-text")], "only the whole company alias expands the candidates");
+  const multi = await loadPool(query("吉林大学 qy"));
+  assert.deepEqual(multi.items.map(item => item.id), [id("company-text")], "only the whole institution alias expands the candidates");
 });
 
 test("relevance retains combined filters and literal LIKE characters", async () => {
-  await add("filtered", "uv", "uv", { channel: "x", category: "paper", tags: [T] });
-  await add("wrong-channel", "uv", "uv", { category: "paper", tags: [T] });
+  await add("filtered", "uv", "uv", { channel: "x", category: "research", tags: [T] });
+  await add("wrong-channel", "uv", "uv", { category: "research", tags: [T] });
   await add("wrong-category", "uv", "uv", { channel: "x", tags: [T] });
-  await add("wrong-tag", "uv", "uv", { channel: "x", category: "paper" });
-  const filtered = await loadPool({ ...query("uv"), channel: "x", category: "paper", tag: T });
+  await add("wrong-tag", "uv", "uv", { channel: "x", category: "research" });
+  const filtered = await loadPool({ ...query("uv"), channel: "x", category: "research", tag: T });
   assert.deepEqual(filtered.items.map(item => item.id), [id("filtered")]);
   await add("literal", "qx%_\\z", "");
   await add("wildcard-lookalike", "qx-anything-z", "");

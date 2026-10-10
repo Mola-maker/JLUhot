@@ -1,0 +1,11 @@
+# 本机部署的增量配置：在原有服务上加一个 cloudflared，把 jlu.si 经 Cloudflare Tunnel 指到 web。
+# TUNNEL_TOKEN 在 .env 里（Cloudflare Zero Trust → Networks → Tunnels → molamaker-jlu）。
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    depends_on:
+      - web

@@ -3,8 +3,8 @@ import { IconCheck, IconChevronDown } from "../icons";
 
 type Variant = "primary" | "secondary";
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-accent text-accent-contrast hover:bg-accent-ink disabled:opacity-45",
-  secondary: "border border-line-strong bg-surface text-ink-2 hover:border-ink-4 hover:text-ink disabled:opacity-50",
+  primary: "btn-mola",
+  secondary: "btn-mola-secondary",
 };
 
 type Size = "md" | "lg";
@@ -12,7 +12,7 @@ const SIZES: Record<Size, string> = { md: "h-11 px-4 text-[13.5px] lg:h-9", lg: 
 
 /** The pill button's classes, for links that look like buttons. */
 export function buttonClass(variant: Variant = "secondary", size: Size = "md"): string {
-  return `inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-[background-color,border-color,color,transform] duration-150 active:scale-[0.98] ${SIZES[size]} ${VARIANTS[variant]}`;
+  return `inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-all duration-150 active:scale-[0.98] ${SIZES[size]} ${VARIANTS[variant]}`;
 }
 
 /** Native select as a pill, like the site's other controls. */
