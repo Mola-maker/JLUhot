@@ -585,6 +585,7 @@
         "itemSelector": ".list3 > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://ccst.jlu.edu.cn/"
@@ -614,6 +615,7 @@
         "itemSelector": ".text-list > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".time",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://csw.jlu.edu.cn/"
@@ -643,6 +645,7 @@
         "itemSelector": ".xwlist > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtRegex": "([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2})",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://ee.jlu.edu.cn/"
@@ -672,6 +675,7 @@
         "itemSelector": ".ny_r .con > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtRegex": "([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2})",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://dce.jlu.edu.cn/"
@@ -701,6 +705,7 @@
         "itemSelector": ".xinwen .new > div > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtRegex": "([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2})",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://law.jlu.edu.cn/"
@@ -734,6 +739,10 @@
         "allowUrlPrefixes": [
           "https://chem.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.info",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -763,6 +772,10 @@
         "allowUrlPrefixes": [
           "https://phy.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.art-tit.cont-tit",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -788,6 +801,7 @@
         "itemSelector": ".sec-fr .list > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtRegex": "([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2})",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://math.jlu.edu.cn/"
@@ -817,6 +831,7 @@
         "itemSelector": ".main > div > ul.list3 > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://jjxy.jlu.edu.cn/"
@@ -850,6 +865,10 @@
         "allowUrlPrefixes": [
           "https://sg.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.sub",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -879,6 +898,10 @@
         "allowUrlPrefixes": [
           "https://wxy.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.sub",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -904,6 +927,7 @@
         "itemSelector": ".list-other > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".ssri",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://sflc.jlu.edu.cn/"
@@ -933,6 +957,7 @@
         "itemSelector": ".list-news > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://medicine.jlu.edu.cn/"
@@ -962,6 +987,7 @@
         "itemSelector": ".nypart_r .list > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".time",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://mae.jlu.edu.cn/"
@@ -991,6 +1017,7 @@
         "itemSelector": ".right > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtRegex": "([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2})",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://auto.jlu.edu.cn/"
@@ -1020,6 +1047,7 @@
         "itemSelector": ".qk-list > ul > li",
         "linkSelector": "a",
         "titleSelector": "h3",
+        "publishedAtSelector": ".qk-tx",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://dmse.jlu.edu.cn/"
@@ -1049,6 +1077,7 @@
         "itemSelector": "ul.list-text > li",
         "linkSelector": "a.tit",
         "titleSelector": "a.tit",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://life.jlu.edu.cn/"
@@ -1082,6 +1111,10 @@
         "allowUrlPrefixes": [
           "https://sai.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.sub",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -1107,6 +1140,7 @@
         "itemSelector": ".tw > ul > li",
         "linkSelector": "a",
         "titleSelector": "h3",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://marx.jlu.edu.cn/"
@@ -1136,6 +1170,7 @@
         "itemSelector": "ul.list-text > li",
         "linkSelector": "a.tit",
         "titleSelector": "a.tit",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://zsy.jlu.edu.cn/"
@@ -1165,6 +1200,7 @@
         "itemSelector": ".nydynamic > ul > li",
         "linkSelector": ".txt a",
         "titleSelector": ".txt a",
+        "publishedAtSelector": ".txt",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://kgxy.jlu.edu.cn/"
@@ -1194,6 +1230,7 @@
         "itemSelector": ".contimgt14_5_tlist > ul > li",
         "linkSelector": "a",
         "titleSelector": "h3",
+        "publishedAtSelector": ".chg_34",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://hac.jlu.edu.cn/"
@@ -1223,6 +1260,7 @@
         "itemSelector": "ul.list-text > li",
         "linkSelector": "a.tit",
         "titleSelector": "a.tit",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://art.jlu.edu.cn/"
@@ -1252,6 +1290,7 @@
         "itemSelector": "ul.ej_list > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".date_list",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://pe.jlu.edu.cn/"
@@ -1285,6 +1324,10 @@
         "allowUrlPrefixes": [
           "https://adm.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.rq_djs",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -1310,6 +1353,7 @@
         "itemSelector": "ul.ul02 > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtRegex": "([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2})",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://nasa.jlu.edu.cn/"
@@ -1339,6 +1383,7 @@
         "itemSelector": ".news2 > div > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtRegex": "([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2})",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://sipa.jlu.edu.cn/"
@@ -1368,6 +1413,7 @@
         "itemSelector": "ul.list-con > li",
         "linkSelector": "a.tit",
         "titleSelector": "a.tit",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://jt.jlu.edu.cn/"
@@ -1401,6 +1447,10 @@
         "allowUrlPrefixes": [
           "https://cbae.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.zzly",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -1426,6 +1476,7 @@
         "itemSelector": ".mainr .list > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtRegex": "([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2})",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://geo.jlu.edu.cn/"
@@ -1455,6 +1506,7 @@
         "itemSelector": "ul.list-text > li",
         "linkSelector": "a.tit",
         "titleSelector": "a.tit",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://gest.jlu.edu.cn/"
@@ -1484,6 +1536,7 @@
         "itemSelector": "ul.list_list > li",
         "linkSelector": "a.tit",
         "titleSelector": "a.tit",
+        "publishedAtSelector": ".time",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://const.jlu.edu.cn/"
@@ -1513,6 +1566,7 @@
         "itemSelector": ".list3 > ul > li",
         "linkSelector": "a.bt",
         "titleSelector": "a.bt",
+        "publishedAtSelector": ".time",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://cer.jlu.edu.cn/"
@@ -1542,6 +1596,7 @@
         "itemSelector": ".txtList > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".span",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://ciee.jlu.edu.cn/"
@@ -1571,6 +1626,7 @@
         "itemSelector": ".info_list > ul > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".info_time",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://sph.jlu.edu.cn/"
@@ -1600,6 +1656,7 @@
         "itemSelector": "ul.djList > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".txt",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://yxy.jlu.edu.cn/"
@@ -1633,6 +1690,10 @@
         "allowUrlPrefixes": [
           "https://hlxy.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.art-tit.cont-tit",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -1658,6 +1719,7 @@
         "itemSelector": "ul.list-text > li",
         "linkSelector": "a",
         "titleSelector": "a",
+        "publishedAtSelector": ".date",
         "publishedAtUtcOffset": "+08:00",
         "allowUrlPrefixes": [
           "https://jdkq.jlu.edu.cn/"
@@ -1691,6 +1753,10 @@
         "allowUrlPrefixes": [
           "https://dwyx.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "div.art-tit.cont-tit",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
@@ -1720,6 +1786,10 @@
         "allowUrlPrefixes": [
           "https://spxy.jlu.edu.cn/"
         ],
+        "detail": {
+          "publishedAtSelector": "span.time",
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 5
         }
