@@ -79,6 +79,14 @@ docker compose run --rm setup && docker compose up -d
 
 下面按时间从新到旧列出每次更新要注意的事。
 
+#### 学院来源的重复标签（2026 年 10 月 9 日）
+
+`industry/sources.json` 里 40 个学院来源的 `tags` 曾被写成 `["学院","学院"]`。`scripts/seed.ts` 走的是 `ON CONFLICT DO NOTHING`，不会修正已存在的行，**已在运行的部署需要手工跑一次**（来源标签会进分析提示词）：
+
+```sql
+UPDATE sources SET tags = ARRAY['学院'] WHERE tags = ARRAY['学院','学院'];
+```
+
 #### 关于页的做站人形象（2026 年 10 月 8 日）
 
 关于页 maker 块里的圆头像换成了站点自己的角色形象，跟着指针换状态。头像原先是两个来源之一：
