@@ -110,11 +110,44 @@ function stagesOf(stats: SiteStats | null): Stage[] {
   ];
 }
 
-/** The maker's round avatar before the greeting; it steps aside if the image fails. */
-function MakerFace({ src }: { src: string }) {
-  const [failed, setFailed] = useState(false);
-  if (failed) return null;
-  return <img src={src} alt={`${ABOUT.maker?.name ?? ""}的头像`} width={48} height={48} onError={() => setFailed(true)} className="size-11 shrink-0 rounded-full bg-bg-sunk object-cover ring-1 ring-line xl:size-12" />;
+/** The site's own character before the greeting; it stands still until the pointer arrives. */
+const OC_STATES = [
+  ["idle", "/art/character-states/idle.webp"],
+  ["hover", "/art/character-states/hover.webp"],
+  ["pressed", "/art/character-states/pressed.webp"],
+] as const;
+
+type OcState = (typeof OC_STATES)[number][0];
+
+function MakerFace() {
+  const [state, setState] = useState<OcState>("idle");
+  const [broken, setBroken] = useState(false);
+  // 图挂了就整个不渲染：一个空的圆底 + ring 比什么都不显示更像坏掉。
+  if (broken) return null;
+  return (
+    <span
+      className="relative size-11 shrink-0 xl:size-12"
+      onPointerEnter={() => setState("hover")}
+      onPointerLeave={() => setState("idle")}
+      onPointerDown={() => setState("pressed")}
+      onPointerUp={() => setState("hover")}
+      onPointerCancel={() => setState("idle")}
+    >
+      {/* 三张都挂着，只让当前那张可见：单独换 src 的话第一次悬停会空一帧。 */}
+      {OC_STATES.map(([name, src]) => (
+        <img
+          key={name}
+          src={src}
+          alt=""
+          width={48}
+          height={48}
+          draggable={false}
+          onError={() => setBroken(true)}
+          className={`absolute inset-0 size-full select-none rounded-full bg-bg-sunk object-cover ring-1 ring-line ${state === name ? "opacity-100" : "opacity-0"}`}
+        />
+      ))}
+    </span>
+  );
 }
 
 function QrCard({ src, kind, title, note }: { src: string; kind: string; title: string; note: string }) {
@@ -144,7 +177,7 @@ function Maker({ maker, contact }: { maker: NonNullable<typeof ABOUT.maker>; con
       <div>
         <Kicker>做这个站的人</Kicker>
         <h2 id="maker" className="mt-4 flex items-center gap-3.5 text-[26px] font-black leading-[1.3] tracking-[-0.02em] text-ink xl:gap-4 xl:text-[34px]">
-          {contact?.makerAvatar && <MakerFace src={contact.makerAvatar} />}
+          <MakerFace />
           <span>
             嗨，我是 <span className="whitespace-nowrap text-accent">{maker.name}</span>
           </span>
@@ -212,7 +245,7 @@ export default function AboutPage() {
       <header className="grid items-end gap-8 pt-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:pt-0">
         <div>
           <Kicker>{ABOUT.kicker}</Kicker>
-          <h1 data-page-title="" className="mt-5 text-[34px] font-black leading-[1.18] tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[46px] xl:text-[56px] 2xl:text-[64px]">
+          <h1 data-page-title="" className="mt-5 font-display text-[34px] font-black leading-[1.18] tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[46px] xl:text-[56px] 2xl:text-[64px]">
             {ABOUT.headline[0]}
             <br />
             <span className="text-accent">{ABOUT.headline[1]}</span>

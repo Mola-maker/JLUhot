@@ -79,6 +79,13 @@ docker compose run --rm setup && docker compose up -d
 
 下面按时间从新到旧列出每次更新要注意的事。
 
+#### 关于页的做站人形象（2026 年 10 月 8 日）
+
+关于页 maker 块里的圆头像换成了站点自己的角色形象，跟着指针换状态。头像原先是两个来源之一：
+`site/site.ts` 的 `ABOUT.maker.avatarSourceId`（取某个信源的头像）或
+`site/brand/contact/maker-avatar.*`（随站点发布的文件）。这两个来源和 `/api/site/contact` 里的
+`makerAvatar` 字段一并去掉了；如果你配过 `avatarSourceId`，它不再有效果。
+
 #### 原帖展示与引擎同步（2026 年 10 月 6 日）
 
 没有新增必填环境变量或数据库迁移。自己维护 `site/site.ts` 的站点需补上 `REPORTS.quiet`，可对照示范配置：日报时段内有资料经过评判、但没有新大事时照常出刊，用这两句做标题与导语；导语的 `{start}`、`{end}` 是时段起止。没有任何资料经过评判仍算采集或判断失败，不伪装成平静的一天。

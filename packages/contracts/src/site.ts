@@ -358,12 +358,11 @@ export interface ChangelogResponse {
 
 /**
  * The about page's contact codes (uploaded in the admin or shipped with the site; null when there is
- * none) and the maker's avatar through the image proxy.
+ * none).
  */
 export interface SiteContact {
   wechatQr: string | null;
   feishuQr: string | null;
-  makerAvatar: string | null;
 }
 
 /** Figures and samples for the about page (site-only; not part of v1). */

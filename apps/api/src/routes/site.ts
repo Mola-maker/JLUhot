@@ -2,7 +2,7 @@
 // Reads through the same public read layer as v1; no cookies are read or set.
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { isCategoryKey, isChannelKey, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
-import type { ReportIndexResponse, ReportLatestPage, ReportNavigationResponse, SearchSuggestions, SiteContact } from "@aihot/contracts/site";
+import type { ReportIndexResponse, ReportLatestPage, ReportNavigationResponse, SearchSuggestions } from "@aihot/contracts/site";
 import { InvalidCursorError } from "@aihot/backend/lib/cursor";
 import { exportMarkdown, loadItemDetail } from "@aihot/backend/publication/detail";
 import { loadPool, SearchBusyError } from "@aihot/backend/publication/pool";
@@ -11,7 +11,7 @@ import { loadStoryFollowups } from "@aihot/backend/publication/followups";
 import { loadGroupReports } from "@aihot/backend/publication/groups";
 import { hotSearchLinks, loadHotStrip } from "@aihot/backend/publication/hot";
 import { loadChangelog, siteMeta } from "@aihot/backend/site/meta";
-import { loadContact, loadMakerAvatar } from "@aihot/backend/site/contact";
+import { loadContact } from "@aihot/backend/site/contact";
 import { loadSiteStats } from "@aihot/backend/site/stats";
 import { itemAvailability } from "@aihot/backend/publication/availability";
 import { listTopicSummaries, loadTopicPage, topicBrowseLinks } from "@aihot/backend/publication/topics";
@@ -113,9 +113,7 @@ export function registerSite(app: FastifyInstance) {
   }));
 
   app.get("/api/site/contact", siteHandler(async (req, reply) => {
-    const [contact, makerAvatar] = await Promise.all([loadContact(), loadMakerAvatar()]);
-    const body: SiteContact = { ...contact, makerAvatar };
-    return sendJsonWithEtag(req, reply, body, { etagPrefix: "contact", cacheControl: "public, max-age=300, s-maxage=300" });
+    return sendJsonWithEtag(req, reply, await loadContact(), { etagPrefix: "contact", cacheControl: "public, max-age=300, s-maxage=300" });
   }));
 
   app.get("/api/site/stats", siteHandler(async (req, reply) => {
