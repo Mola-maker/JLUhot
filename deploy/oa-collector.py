@@ -66,6 +66,25 @@ def fetch(url: str, timeout: int = 30) -> str:
         return res.read().decode("utf-8", errors="replace")
 
 
+def fetch_listing(url: str, *, tries: int = 3) -> str:
+    """列表页抓取：校园网到 oa.jlu.edu.cn 的链路会偶发丢连接（实测 WinError 10060）。
+
+    列表页失败会丢掉整个频道（collect() 按频道 catch），所以这一层必须重试；
+    详情页失败只丢一条，那边已经有 per-item 的容错，不需要在这里兜。
+    """
+    for attempt in range(1, tries + 1):
+        try:
+            return fetch(url)
+        except (urllib.error.URLError, ConnectionError) as e:
+            # 超时/拒连是 URLError（实测 WinError 10060），对端直接断开是 RemoteDisconnected，
+            # 它是 ConnectionError——两种都是偶发丢包，都重试；解析错误（RuntimeError）不在其列。
+            if attempt == tries:
+                raise
+            print(f"    列表页第 {attempt} 次失败（{e}），等 {attempt * 2} 秒重试", file=sys.stderr)
+            time.sleep(attempt * 2)
+    raise AssertionError("unreachable")
+
+
 class Pacer:
     """推送节流：站点侧每分钟只收 PUSHES_PER_MINUTE 次，超了会 429。"""
 
@@ -140,7 +159,7 @@ def collect_channel(channel_id: str, today: datetime, cutoff: datetime, *, list_
     picked: list[dict] = []
     seen: set[str] = set()
     for page in range(1, PAGE_LIMIT + 1):
-        page_items = parse_list(fetch(list_url.format(channel_id, page)), today)
+        page_items = parse_list(fetch_listing(list_url.format(channel_id, page)), today)
         if not page_items:
             raise RuntimeError(f"第 {page} 页没有解析到条目（页面结构变了？）")
         fresh = 0

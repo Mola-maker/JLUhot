@@ -49,9 +49,19 @@ def stub(replies: list[int] | None = None):
 
 
 class _ListStub(BaseHTTPRequestHandler):
-    """按 startPage 给一页 HTML；页码超出就重复最后一页（这样漏停会被 hits 抓到）。"""
+    """按 startPage 给一页 HTML；页码超出就重复最后一页（这样漏停会被 hits 抓到）。
+
+    `fail_first` 次请求直接断开连接、不写任何字节，模拟校园网偶发丢包（客户端得到
+    RemoteDisconnected）。`attempts` 数每一次到达服务器的请求，`hits` 保持原义——只数
+    成功渲染出 HTML 的页。
+    """
 
     def do_GET(self):  # noqa: N802
+        self.server.attempts += 1
+        if self.server.fail_first > 0:
+            self.server.fail_first -= 1
+            self.close_connection = True
+            return
         page = int(re.search(r"startPage=(\d+)", self.path).group(1))
         self.server.hits.append(page)
         body = self.server.pages[min(page, len(self.server.pages)) - 1].encode("utf-8")
@@ -65,9 +75,9 @@ class _ListStub(BaseHTTPRequestHandler):
         pass
 
 
-def list_stub(pages: list[str]):
+def list_stub(pages: list[str], *, fail_first: int = 0):
     server = HTTPServer(("127.0.0.1", 0), _ListStub)
-    server.hits, server.pages = [], list(pages)
+    server.hits, server.pages, server.attempts, server.fail_first = [], list(pages), 0, fail_first
     threading.Thread(target=server.serve_forever, daemon=True).start()
     return server, f"http://127.0.0.1:{server.server_port}/PortalInformation!jldxList.action?1=1&channelId={{}}&startPage={{}}"
 
@@ -160,6 +170,31 @@ class PaginationTests(unittest.TestCase):
         try:
             with self.assertRaises(RuntimeError):
                 oa.collect_channel("179577", TODAY, CUTOFF, list_url=url)
+        finally:
+            server.shutdown()
+            server.server_close()
+
+
+class ListingRetryTests(unittest.TestCase):
+    def test_a_transient_list_failure_is_retried_instead_of_losing_the_channel(self):
+        """列表页偶发丢连接（实测 WinError 10060）不能把整个频道丢掉。"""
+        server, url = list_stub([list_html([("窗口内甲", "2", "今天 08:00")])], fail_first=1)
+        try:
+            items = oa.collect_channel("179577", TODAY, CUTOFF, list_url=url)
+            self.assertEqual([i["channelItemId"] for i in items], ["2"])
+            # 第 1 页：断一次 + 重试成功；条目在窗口内，翻页继续，第 2 页再抓一次才停下 → 共 3 次。
+            self.assertEqual(server.attempts, 3)
+        finally:
+            server.shutdown()
+            server.server_close()
+
+    def test_a_channel_that_never_answers_still_raises(self):
+        """三次都断开 = 这个频道真的抓不到：必须抛，不能安静地当成空频道。"""
+        server, url = list_stub([list_html([("窗口内甲", "2", "今天 08:00")])], fail_first=99)
+        try:
+            with self.assertRaises(Exception):
+                oa.collect_channel("179577", TODAY, CUTOFF, list_url=url)
+            self.assertEqual(server.attempts, 3)  # 用尽 tries 才抛
         finally:
             server.shutdown()
             server.server_close()
