@@ -48,7 +48,7 @@ async function source(suffix: string, tier: string, owner: string | null = null,
 async function story(title = "OpenAI 发布 Dots") {
   const [s] = await sql`INSERT INTO stories (public_id,title,first_report_at,latest_at,latest) VALUES (${randomUUID()},${title},${at(100)},${at(0)},'错误的生成进展') RETURNING id, public_id`;
   const [f] = await sql`INSERT INTO facts (public_id,story_id,title,subject,action,object,conditions)
-    VALUES (${`f-${randomUUID()}`},${s!.id},${title},'OpenAI','发布','Dots','自主执行任务消耗额度') RETURNING id, public_id`;
+    VALUES (${`f-${randomUUID()}`},${s!.id},${title},'吉林大学','发布','Dots','自主执行任务消耗额度') RETURNING id, public_id`;
   return { storyId: Number(s!.id), storyPublicId: s!.public_id as string, factId: Number(f!.id), factPublicId: f!.public_id as string };
 }
 async function report(sourceId: string, group: Awaited<ReturnType<typeof story>>, opts: { title: string; hours: number; selected?: boolean; score?: number; role?: string }) {
@@ -341,7 +341,7 @@ test("the hot board shows an event under its own title, linked to the fact most 
   const official = await source("hot-official", "T1");
   const other = await source("hot-other", "T2");
   const g = await story("OpenAI 发布 Dots");
-  const fact = async (title: string) => Number((await sql`INSERT INTO facts (public_id,story_id,title,subject) VALUES (${`f-${randomUUID()}`},${g.storyId},${title},'OpenAI') RETURNING id`)[0]!.id);
+  const fact = async (title: string) => Number((await sql`INSERT INTO facts (public_id,story_id,title,subject) VALUES (${`f-${randomUUID()}`},${g.storyId},${title},'吉林大学') RETURNING id`)[0]!.id);
   // A leak opens the story and a single follow-up scores highest; the launch is what two sources report.
   const leak = await report(s, { ...g, factId: await fact("OpenAI 常驻助手曝光") }, { title: "发布前的爆料", hours: 30, score: 99 });
   const media = await report(s, g, { title: "Dots 媒体报道", hours: 4, score: 90 });
@@ -389,7 +389,7 @@ test("an editor moves a report into the fact it repeats: no false development re
   const s = await source("move", "T1");
   const g = await story("OpenAI 发布 GPT-6.1 Sol");
   const launch = await report(s, g, { title: "Sol 官网发布", hours: 6 });
-  const [dup] = await sql`INSERT INTO facts (public_id,story_id,title,subject) VALUES (${`f-${randomUUID()}`},${g.storyId},'OpenAI发布GPT-6.1 Sol模型','OpenAI') RETURNING id`;
+  const [dup] = await sql`INSERT INTO facts (public_id,story_id,title,subject) VALUES (${`f-${randomUUID()}`},${g.storyId},'OpenAI发布GPT-6.1 Sol模型','吉林大学') RETURNING id`;
   const repost = await report(s, { ...g, factId: Number(dup!.id) }, { title: "官方线程里的重复发布", hours: 1 });
   await sql`INSERT INTO story_signals (story_id,article_id,source_id,participant_key,kind,observed_at) VALUES (${g.storyId},${repost},${s},${`source:${s}`},'editorial',${at(1)})`;
   // Moving re-derives the publication from its analysis, which carries no test tag: read the unfiltered timeline.
