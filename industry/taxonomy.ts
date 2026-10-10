@@ -1,4 +1,4 @@
-// 这个行业的分类体系：类别、标签词表、公司（主体）名录，以及防止张冠李戴的身份词典。
+// 这个行业的分类体系：类别、标签词表、机构（主体）名录，以及防止张冠李戴的身份词典。
 // 模型按这里的词表打标签，主题页（topics.json）按标签归类，筛选栏按类别分组。
 // 换行业时：类别的 key 会出现在网址里（/all?category=…），上线后就不要再改；标签和名录可以随时增减。
 
@@ -11,12 +11,13 @@
  * feedLabel 是分类 RSS 标题里的名字（不写就用 label）。公开接口、RSS 和 MCP 里要把一类并进另一类发布，写在站点设置里（site/site.ts 的 PUBLIC_CATEGORIES）。
  */
 export const CATEGORIES = [
-  { key: "ai-models", label: "模型", feedLabel: "AI 模型", section: "模型发布/更新", guide: "模型本身的发布、版本、权重开放、能力或价格变化，以及既有榜单上的模型成绩。公布一次跑分不是发布新基准，也不是教程。" },
-  { key: "ai-products", label: "产品", feedLabel: "AI 产品", section: "产品发布/更新", guide: "可使用的 AI 产品、功能、应用、工具、API、平台和工程组件的发布更新。模型厂商发布的推理框架、算子库、硬件适配组件仍是产品，不能因为厂商名归成模型。" },
-  { key: "industry", label: "行业", feedLabel: "行业动态", section: "行业动态", guide: "已发生的公司经营、融资并购、人事、合作、诉讼、政策、真实安全事故及调查进展。新闻由当事人发帖、带有态度，也不因此变成观点。" },
-  { key: "paper", label: "论文", feedLabel: "论文", section: "论文研究", guide: "以新研究方法、实验设计与发现为核心的论文、技术报告、新基准或研究数据集。系统性红队实验属于研究；既有榜单成绩归模型，真实事故的新闻调查归行业。" },
-  { key: "tip", label: "教程", section: "技巧与观点", guide: "读者可以照着使用的方法、提示词、工具用法、工程实践复盘与技术讲解。重点是可复用的做法；单纯发布工具归产品，只有态度和预测而无做法归观点。", commentary: true },
-  { key: "opinion", label: "观点", section: "技巧与观点", guide: "重点是作者的解释、判断、主张、预测、评论或访谈观点。讨论市场不自动归行业，作者是名人不自动归观点。", commentary: true },
+  { key: "notices", label: "通知公告", section: "通知公告", guide: "面向师生的正式通知、公告与公示：教务安排、考试报名、选课、放假、停水停电、后勤服务、规章制度。与学校要闻的边界：通知是要求读者按之行动或知晓的安排，不是对已发生事件的报道；讲座与活动预告归学生·社团。" },
+  { key: "campus", label: "学校要闻", feedLabel: "学校要闻", section: "学校要闻", guide: "学校层面的重要新闻：重要会议与决策、校领导重要活动、上级视察、发展规划、重大合作与揭牌。院系的一般性工作报道归学生·社团或科研学术；纯安排类文字归通知公告。" },
+  { key: "research", label: "科研学术", section: "科研学术", guide: "科研成果、论文发表、项目立项、科研奖励、学术会议与学科建设进展。学者因成果获得个人荣誉归人物·荣誉；讲座预告归学生·社团。" },
+  { key: "admissions", label: "招生就业", section: "招生就业", guide: "招生政策与简章、保研推免、考研复试、学位与培养政策变化，以及招聘会、双选会、就业指导。政策文件的原文通知归通知公告，解读与进展归此类。" },
+  { key: "student", label: "学生·社团", section: "学生·社团", guide: "学生工作与院系动态、社团活动、讲座与活动预告、校园文化与体育赛事。正式的事务性安排归通知公告；学术成果归科研学术。" },
+  { key: "people", label: "人物·荣誉", section: "人物·荣誉", guide: "师生获奖、荣誉表彰、学者事迹与校友动态。成果本身归科研学术，授予人的荣誉归此类。" },
+  { key: "ai", label: "AI前沿", feedLabel: "AI前沿", section: "AIhot·AI前沿", guide: "AIhot 板块的 AI 行业动态：新模型与重要产品发布、重要研究进展、行业大事。边界：吉林大学自己的 AI 科研成果归科研学术，学校的信息化建设通知归通知公告；这里只收来自 AI 行业信源的行业消息。" },
 ] as const satisfies ReadonlyArray<{ key: string; label: string; feedLabel?: string; section: string; guide: string; commentary?: true }>;
 
 /**
@@ -24,54 +25,79 @@ export const CATEGORIES = [
  * category 是类别，tag 是标签，两者都对上才算；unit 接在数字后面。
  * 没有这样一类的行业设成 null，报头就不显示这个数。
  */
-export const RELEASE: { category: string; tag: string; unit: string } | null = { category: "ai-models", tag: "模型发布", unit: "个新模型" };
+export const RELEASE: { category: string; tag: string; unit: string } | null = null;
 
 /** 周报月报的总述可以直接写、不必在报道里找到出处的行业通用词（小写）。站名会自动算进去。 */
-export const PLAIN_TERMS: readonly string[] = ["ai", "api", "llm", "gpu", "agi", "ceo", "ipo"];
+export const PLAIN_TERMS: readonly string[] = ["jlu", "985", "211", "双一流", "ai", "openai", "gpt", "大模型"];
 
 /**
  * 内容理解一步给每篇资料判的“内容类型”（写在 prompts/content-understanding.md 里，改了类型要同步改那份提示词）。
  * 评分提示词（prompts/selection-score.md）按类型给五个维度不同的权重。
  */
-export const ITEM_TYPES = ["model_release", "product_launch", "tool_or_prompt", "research_paper", "industry_event", "opinion_analysis", "tutorial_explainer"] as const;
+export const ITEM_TYPES = ["notice_announcement", "policy_change", "research_result", "campus_event", "activity_announcement", "honor_recognition", "service_info", "model_release", "product_launch", "tool_or_prompt", "research_paper", "industry_event", "opinion_analysis", "tutorial_explainer"] as const;
 
 // ── 标签词表 ────────────────────────────────────────────────────────────────────────────
 
 /** 每篇资料的第一个标签必须是这些“分类标签”之一。 */
 export const CATEGORY_TAGS = [
-  "产品更新", "模型发布", "论文/研究", "开源/仓库", "教程/实践", "现象/趋势", "大佬观点", "评测/基准", "安全/对齐", "行业动态", "政策/监管",
-  "非AI/通用工具", "其他",
+  "通知公告", "学校要闻", "科研/学术", "招生/就业", "学生/社团", "人物/荣誉", "讲座/活动", "后勤/服务", "媒体吉大", "AI/前沿", "其他",
 ] as const;
 
 /** 可选的主题标签。 */
 export const TOPIC_TAGS = [
-  "Agent", "编码", "推理", "多模态", "语音", "视频", "图像生成", "RAG", "端侧", "数据/训练", "搜索", "部署/工程", "开源生态", "具身智能", "MCP/工具调用",
+  "教务", "考试", "选课", "奖学金/资助", "保研/推免", "考研/复试", "招生", "就业/招聘", "论文/成果", "学术讲座", "学科建设", "对外合作", "校园文化", "体育/运动会", "后勤/基建", "校友", "大模型", "AI产品", "AI研究",
 ] as const;
 
-/** 可选的实体标签（公司、机构、平台）。 */
-export const ENTITY_TAGS = ["OpenAI", "Anthropic", "DeepSeek", "DeepMind", "Google", "Meta", "Microsoft", "xAI", "Hugging Face", "GitHub", "arXiv"] as const;
+/** 可选的实体标签（学校机关、机构、主管部门）。 */
+export const ENTITY_TAGS = ["吉林大学", "教务处", "研究生院", "学生工作部", "校团委", "图书馆", "后勤处", "保卫处", "校医院", "教育部", "吉林省"] as const;
 
 /** 模型常写的近义词，统一成词表里的写法。 */
 export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
-  "教程/玩法": "教程/实践", "技巧/最佳实践": "教程/实践", "合作/生态": "行业动态", "融资/收购": "行业动态", "公司动态": "行业动态",
-  合作: "行业动态", 生态: "行业动态", 融资: "行业动态", 收购: "行业动态", 投资: "行业动态", 并购: "行业动态",
-  政策: "政策/监管", 监管: "政策/监管", 法规: "政策/监管", 安全: "安全/对齐", 对齐: "安全/对齐",
-  论文: "论文/研究", 研究: "论文/研究", paper: "论文/研究", papers: "论文/研究",
-  "open-source": "开源/仓库", 开源: "开源/仓库", 仓库: "开源/仓库", repo: "开源/仓库",
-  教程: "教程/实践", 玩法: "教程/实践", 指南: "教程/实践", 技巧: "教程/实践", 最佳实践: "教程/实践", 实践: "教程/实践",
-  产品: "产品更新", 更新: "产品更新", 发布: "模型发布", 模型: "模型发布", 趋势: "现象/趋势", 现象: "现象/趋势", 观点: "大佬观点",
-  视频生成: "视频", 非ai: "非AI/通用工具", "non-ai": "非AI/通用工具", 通用工具: "非AI/通用工具", 工程工具: "非AI/通用工具",
-  安全扫描: "非AI/通用工具", devops: "非AI/通用工具", 行业: "行业动态", 动态: "行业动态",
+  通知: "通知公告", 公告: "通知公告", 公示: "通知公告", 通告: "通知公告",
+  要闻: "学校要闻", 焦点: "学校要闻", 焦点新闻: "学校要闻",
+  科研: "科研/学术", 学术: "科研/学术", 研究: "科研/学术",
+  论文: "论文/成果", 成果: "论文/成果", 科研成果: "论文/成果",
+  讲座: "学术讲座", 报告会: "学术讲座", 讲座预告: "学术讲座",
+  推免: "保研/推免", 保研: "保研/推免", 研究生推免: "保研/推免",
+  考研: "考研/复试", 复试: "考研/复试",
+  奖学金: "奖学金/资助", 助学金: "奖学金/资助", 资助: "奖学金/资助",
+  招生简章: "招生", 本科招生: "招生",
+  就业: "就业/招聘", 招聘: "就业/招聘", 求职: "就业/招聘", 双选会: "就业/招聘",
+  活动: "学生/社团", 社团: "学生/社团", 学生会: "学生/社团",
+  获奖: "人物/荣誉", 荣誉: "人物/荣誉", 表彰: "人物/荣誉",
+  后勤: "后勤/服务", 服务: "后勤/服务", 停水停电: "后勤/服务",
+  基建: "后勤/基建", 运动会: "体育/运动会", 体育: "体育/运动会", 文艺: "校园文化",
 };
 
-// ── 公司与主体 ──────────────────────────────────────────────────────────────────────────
+// ── 机构与主体 ──────────────────────────────────────────────────────────────────────────
 
 /**
- * 公司主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。
- * aliases 给结构抽取模型看；otherNames 是公司自己的其他称呼（官方账号名、子品牌），
+ * 机构主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。
+ * aliases 给结构抽取模型看；otherNames 是机构自己的其他称呼（官方账号名、子品牌），
  * 把事实的主体对到发布方时也认它们。
  */
 export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[]; otherNames?: string[] }> = {
+  jlu: { name: "吉林大学", displayTag: "吉林大学", aliases: ["吉林大学", "吉大", "JLU", "Jilin University"], otherNames: ["吉林大学新闻网", "吉大新闻"] },
+  "jlu-news-center": { name: "吉林大学新闻中心", displayTag: null, aliases: ["吉林大学新闻中心", "吉大新闻中心", "党委宣传部"] },
+  "jlu-president-office": { name: "校长办公室", displayTag: null, aliases: ["校长办公室", "校长办"] },
+  "jlu-registrar": { name: "教务处", displayTag: "教务处", aliases: ["教务处", "本科生院"] },
+  "jlu-graduate-school": { name: "研究生院", displayTag: "研究生院", aliases: ["研究生院", "党委研究生工作部", "研究生工作部"] },
+  "jlu-student-affairs": { name: "学生工作部", displayTag: "学生工作部", aliases: ["学生工作部", "学工部", "党委学生工作部"] },
+  "jlu-youth-league": { name: "校团委", displayTag: "校团委", aliases: ["校团委", "共青团吉林大学委员会"] },
+  "jlu-library": { name: "图书馆", displayTag: "图书馆", aliases: ["吉林大学图书馆", "图书馆"] },
+  "jlu-cst": { name: "计算机科学与技术学院", displayTag: null, aliases: ["计算机科学与技术学院", "计算机学院"] },
+  "jlu-software": { name: "软件学院", displayTag: null, aliases: ["软件学院"] },
+  "jlu-law": { name: "法学院", displayTag: null, aliases: ["法学院"] },
+  "jlu-chem": { name: "化学学院", displayTag: null, aliases: ["化学学院"] },
+  "jlu-physics": { name: "物理学院", displayTag: null, aliases: ["物理学院"] },
+  "jlu-math": { name: "数学学院", displayTag: null, aliases: ["数学学院"] },
+  "jlu-medicine": { name: "白求恩医学部", displayTag: null, aliases: ["白求恩医学部", "医学部"] },
+  "jlu-econ": { name: "经济学院", displayTag: null, aliases: ["经济学院"] },
+  "jlu-busi": { name: "商学院", displayTag: null, aliases: ["商学院"] },
+  "jlu-foreign": { name: "外国语学院", displayTag: null, aliases: ["外国语学院"] },
+  "jlu-journalism": { name: "新闻与传播学院", displayTag: null, aliases: ["新闻与传播学院"] },
+  "jlu-auto": { name: "汽车工程学院", displayTag: null, aliases: ["汽车工程学院"] },
+  "jlu-bio": { name: "生命科学学院", displayTag: null, aliases: ["生命科学学院"] },
   "world-labs": { name: "World Labs", displayTag: null, aliases: ["World Labs"] },
   "thinking-machines": { name: "Thinking Machines Lab", displayTag: null, aliases: ["Thinking Machines"] },
   amd: { name: "AMD", displayTag: null, aliases: ["AMD", "Advanced Micro Devices"] },
@@ -93,10 +119,21 @@ export const ENTITIES: Record<string, { name: string; displayTag: string | null;
 };
 
 /**
- * 身份词典：摘要和标题里出现的公司，必须在原文里也出现过，否则退回原标题、丢掉摘要（防止模型张冠李戴）。
+ * 身份词典：摘要和标题里出现的机构，必须在原文里也出现过，否则退回原标题、丢掉摘要（防止模型张冠李戴）。
  * 行业没有这个问题时可以留空数组。
  */
 export const IDENTITY_LEXICON: ReadonlyArray<{ id: string; name: string; patterns: RegExp[] }> = [
+  { id: "jlu", name: "吉林大学", patterns: [/吉林大学|吉大|\bJLU\b|Jilin University/i] },
+  { id: "jlu-registrar", name: "教务处", patterns: [/教务处|本科生院/] },
+  { id: "jlu-graduate-school", name: "研究生院", patterns: [/研究生院|研究生工作部/] },
+  { id: "jlu-student-affairs", name: "学生工作部", patterns: [/学生工作部|学工部/] },
+  { id: "jlu-youth-league", name: "校团委", patterns: [/校团委|共青团吉林大学委员会/] },
+  { id: "jlu-library", name: "图书馆", patterns: [/图书馆/] },
+  { id: "jlu-cst", name: "计算机科学与技术学院", patterns: [/计算机科学与技术学院|计算机学院/] },
+  { id: "jlu-law", name: "法学院", patterns: [/法学院/] },
+  { id: "jlu-chem", name: "化学学院", patterns: [/化学学院/] },
+  { id: "jlu-physics", name: "物理学院", patterns: [/物理学院/] },
+  { id: "jlu-medicine", name: "白求恩医学部", patterns: [/白求恩医学部/] },
   { id: "openai", name: "OpenAI", patterns: [/openai|chatgpt|\bgpt-?[o\d]|\bsora\b|\bcodex\b/i] },
   { id: "anthropic", name: "Anthropic", patterns: [/anthropic|\bclaude\b/i, /\b(?:opus|sonnet|haiku)\s*\d+(?:[.\-]\d+)*\b/i, /\bfable\s*\d+(?:[.\-]\d+)*\b|\bmythos\b/i] },
   { id: "google", name: "Google / Gemini", patterns: [/google|deepmind|\bgemini\b|notebooklm|\bveo\s?\d|\bAlphaFold\b|\bAMIE\b/i] },
@@ -131,23 +168,14 @@ export const IDENTITY_LEXICON: ReadonlyArray<{ id: string; name: string; pattern
   { id: "baidu", name: "百度文心", patterns: [/百度|baidu|文心|\bernie\s?bot\b/i] },
 ];
 
-/** 这些域名上的文章，发布方就是对应的公司（托管平台如 GitHub、arXiv 不算）。 */
+/** 这些域名上的文章，发布方就是对应的机构（托管平台不算）。 */
 export const PUBLISHER_DOMAINS: ReadonlyArray<{ entityId: string; domains: readonly string[] }> = [
-  { entityId: "openai", domains: ["openai.com"] },
-  { entityId: "anthropic", domains: ["anthropic.com", "claude.com"] },
-  { entityId: "google", domains: ["deepmind.google", "ai.google", "blog.google"] },
-  { entityId: "deepseek", domains: ["deepseek.com"] },
-  { entityId: "xai", domains: ["x.ai"] },
-  { entityId: "meta", domains: ["ai.meta.com"] },
-  { entityId: "microsoft", domains: ["microsoft.com"] },
-  { entityId: "nvidia", domains: ["nvidia.com"] },
-  { entityId: "qwen", domains: ["qwen.ai"] },
-  { entityId: "cursor", domains: ["cursor.com"] },
-  { entityId: "openrouter", domains: ["openrouter.ai"] },
+  { entityId: "jlu", domains: ["jlu.edu.cn", "oa.jlu.edu.cn"] },
+  { entityId: "jlu-news-center", domains: ["news.jlu.edu.cn"] },
 ];
 
-/** 原文里的这些写法也算提到了对应公司。 */
+/** 原文里的这些写法也算提到了对应机构。 */
 export const IDENTITY_CONTEXT_ALIASES: ReadonlyArray<{ entityId: string; pattern: RegExp }> = [
-  { entityId: "meta", pattern: /@AIatMeta\b/i },
-  { entityId: "zhipu", pattern: /\bZhipu(?:\s+AI\b|['’]s\b)/i },
+  { entityId: "jlu", pattern: /吉林大学新闻网|吉林大学官方微信|吉林大学官方微博/ },
+  { entityId: "jlu-news-center", pattern: /吉大新闻|新闻中心/ },
 ];

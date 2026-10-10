@@ -221,7 +221,7 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": null,
+      "owner_entity_id": "openai",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
@@ -241,7 +241,7 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": null,
+      "owner_entity_id": "google",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
@@ -261,7 +261,7 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": null,
+      "owner_entity_id": "google",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
@@ -282,7 +282,7 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": null,
+      "owner_entity_id": "hugging-face",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
@@ -303,7 +303,7 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": null,
+      "owner_entity_id": "microsoft",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
@@ -324,7 +324,7 @@
         }
       },
       "tier": "T1",
-      "owner_entity_id": null,
+      "owner_entity_id": "nvidia",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
