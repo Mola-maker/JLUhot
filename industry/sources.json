@@ -576,6 +576,153 @@
       "syndicate_fulltext": true
     },
     {
+      "id": "rss-nature",
+      "name": "Nature",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/nature.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "顶刊",
+        "综合"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-science",
+      "name": "Science",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "顶刊",
+        "综合"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-cell",
+      "name": "Cell",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.cell.com/cell/current.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "顶刊",
+        "综合"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nature-machine-intelligence",
+      "name": "Nature Machine Intelligence",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/natmachintell.rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "顶刊",
+        "AI"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-arxiv-cs-ai",
+      "name": "arXiv · cs.AI",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.arxiv.org/rss/cs.AI",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "顶刊",
+        "预印本"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-pnas",
+      "name": "PNAS",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=PNAS",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "顶刊",
+        "综合"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nature-communications",
+      "name": "Nature Communications",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/ncomms.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "顶刊",
+        "综合"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
       "id": "jlu-college-ccst",
       "name": "计算机科学与技术学院·学院新闻",
       "kind": "web_list",

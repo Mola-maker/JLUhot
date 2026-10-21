@@ -4,7 +4,8 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
-    command: tunnel --no-autoupdate run
+    # QUIC 在 Clash TUN 的 fake-IP DNS 下连不上边缘节点（解析出 198.18.x.x，UDP 超时），改走 TCP。
+    command: tunnel --no-autoupdate --protocol http2 run
     environment:
       TUNNEL_TOKEN: ${TUNNEL_TOKEN}
     depends_on:
