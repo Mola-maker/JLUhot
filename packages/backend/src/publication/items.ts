@@ -26,6 +26,8 @@ export interface ItemRow {
   published_at: Date | null;
   discovered_at: Date;
   timeline_at: Date;
+  /** The ranking feed's snapshot time (articles.source_updated_at), or null. */
+  snapshot_at: Date | null;
   /** Holds its fact's selected seat (publish.ts settleSeats). */
   seat: boolean;
   visibility: string;
@@ -50,7 +52,8 @@ export interface ItemRow {
 /** Columns every item listing selects. Internal judgement details never leave this layer. */
 export const ITEM_COLUMNS = sql`
   p.article_id AS id, p.title, p.original_title, p.summary, p.reason, p.category, p.tags, p.score,
-  p.selected, p.seat, p.channel, p.url, p.published_at, p.discovered_at, p.timeline_at, p.visibility,
+  p.selected, p.seat, p.channel, p.url, p.published_at, p.discovered_at, p.timeline_at,
+  CASE WHEN p.published_at IS NULL THEN a.source_updated_at END AS snapshot_at, p.visibility,
   p.body_mode, p.indexable, p.fact_id, s.name AS source_name, s.participation_mode AS source_mode,
   a.x_post, a.author, a.language,
   CASE WHEN s.kind = 'x_search' AND ${sourceOwnsPost(sql`s.config`, sql`a.x_post->>'handle'`)} THEN s.icon_url END AS author_avatar_url,

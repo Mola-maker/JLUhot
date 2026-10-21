@@ -135,6 +135,8 @@ export interface OutlineEntry {
  * unless …/original asks for the original. Only the body shown is sent, with its outline.
  */
 export interface SiteItemDetail extends ItemSummary {
+  /** A ranking feed's snapshot time, when the entry's own publication time is unknown. */
+  snapshotAt: string | null;
   /** The post with all its media; its text is the body. */
   x: Omit<XPostView, "text" | "translation"> | null;
   /** Selected, but its fact's seat is held by this report: marked 同事件, without a reason of its own. */

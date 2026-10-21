@@ -400,6 +400,12 @@ function ItemView({ item }: { item: SiteItemDetail }) {
       <div className="mt-0.5 text-[12px] text-ink-4" suppressHydrationWarning>
         {relativeTime(shownAt)}
       </div>
+      {item.snapshotAt && (
+        <>
+          <div className="mt-3 text-[12px] text-ink-4">榜单快照</div>
+          <time dateTime={item.snapshotAt} className="mono mt-0.5 block text-[12.5px] text-ink-2">{fullDateTime(item.snapshotAt)}</time>
+        </>
+      )}
     </RailSection>
   );
   const outline = showOutline && <ArticleOutline outline={item.outline} />;
@@ -480,6 +486,7 @@ function ItemView({ item }: { item: SiteItemDetail }) {
             <span>·</span>
             {!item.publishedAt && <span>收录于</span>}
             <time dateTime={shownAt} className="mono">{fullDateTime(shownAt)}</time>
+            {item.snapshotAt && <span>· 榜单快照 <time dateTime={item.snapshotAt} className="mono">{fullDateTime(item.snapshotAt)}</time></span>}
             <span suppressHydrationWarning>· {relativeTime(shownAt)}</span>
             {item.selected && (
               <span className="ml-1 lg:hidden">

@@ -24,7 +24,7 @@ export function feedItem(fields: Partial<FeedItemSummary> & Pick<FeedItemSummary
 /** A report as its article page shows it; the fields a test does not name are fixed. */
 export function itemDetail(fields: Partial<SiteItemDetail> & Pick<SiteItemDetail, "id" | "title">): SiteItemDetail {
   return {
-    ...feedItem({ id: fields.id, title: fields.title }), x: null, originalTitle: null, links: { original: "https://example.org/article" },
+    ...feedItem({ id: fields.id, title: fields.title }), x: null, snapshotAt: null, originalTitle: null, links: { original: "https://example.org/article" },
     discoveredAt: FIXTURE_AT, story: null, readingMode: "full", author: null,
     body: { zh: "<p>固定正文</p>", original: null, zhKind: "translation", complete: true },
     outline: [], relatedStories: [], topics: [], indexable: true, markdownAvailable: true, group: null, hasTranslation: true, bodyLanguage: "zh",

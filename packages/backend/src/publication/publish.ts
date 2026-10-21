@@ -27,6 +27,7 @@ interface ArticleRow {
   discovered_at: Date;
   timeline_at: Date;
   backfill: boolean;
+  backfill_reason: string | null;
   body_status: string;
   body_text: string | null;
   x_post: XPostData | null;
@@ -234,7 +235,7 @@ export async function publishArticle(articleId: string, options: PublishOptions 
 
 export async function publishArticleTx(tx: Tx, articleId: string, options: PublishOptions = {}): Promise<PublishResult | null> {
   const [article] = await tx<ArticleRow[]>`
-    SELECT id, source_id, url, title, language, published_at, discovered_at, timeline_at, backfill, body_status,
+    SELECT id, source_id, url, title, language, published_at, discovered_at, timeline_at, backfill, backfill_reason, body_status,
            body_text, x_post, x_article, grouped_at, grouping_status, selection_adds_value
     FROM articles WHERE id = ${articleId} FOR UPDATE`;
   if (!article) return null;
@@ -283,8 +284,10 @@ export async function publishArticleTx(tx: Tx, articleId: string, options: Publi
 
   // An undated archive has a readable detail page, but its discovery is not a news timestamp.
   // Explicit imports can retain an editorial decision already published elsewhere.
+  // A ranking feed's current snapshot has no publication time and is still news: its discovery is the
+  // timestamp, labelled as such. An undated archive stays out of the pool.
   const eligible = isPoolEligible({ participationMode: source.participation_mode, relevance, title, summary, originalPost: !!original })
-    && (!article.backfill || article.published_at !== null || !!options.releasedAt);
+    && (!article.backfill || article.published_at !== null || !!options.releasedAt || article.backfill_reason === "current-snapshot");
   const selectionCandidate = isSelectable(eligible, judgedSelected, source.tier);
   // Scoring nominates a report; a completed identity/value decision admits it to selection.
   // A historical import already has its public decision. Preserve that confirmed state on rebuild.

@@ -54,6 +54,7 @@ const pages: Record<string, () => string> = {
   "/en/post": () => article("Improved token efficiency", "Agents now finish longer runs with fewer tokens. ".repeat(8)),
   "/zh/post": () => article("提升 token 效率", "智能体现在能用更少的 token 完成更长的运行。".repeat(12)),
   "/en/feed.xml": () => `<rss version="2.0"><channel><item><title>Improved token efficiency</title><link>${site}/en/post</link><pubDate>Wed, 23 Sep 2026 12:00:00 GMT</pubDate></item></channel></rss>`,
+  "/snapshot.xml": () => `<rss version="2.0"><channel><pubDate>Wed, 30 Sep 2026 12:00:00 GMT</pubDate><item><title>Snapshot only</title><link>https://example.org/snapshot</link></item><item><title>Item date wins</title><link>https://example.org/dated</link><pubDate>Tue, 29 Sep 2026 12:00:00 GMT</pubDate></item></channel></rss>`,
   "/en/items.json": () => JSON.stringify([{ title: "Improved token efficiency", url: `${site}/en/post` }]),
 };
 function article(title: string, text: string) {
@@ -154,6 +155,24 @@ test("a listing that links other articles in its teasers takes only the links th
     "How Ed Sheeran's U.S. tour went off the rails in 3 weeks",
   ]);
   assert.equal(fromMarkdown(md, "https://example.org", source({ ...config, linksStartLine: undefined })).length, 5, "without the option prose links count");
+});
+
+// A ranking feed says when it built the snapshot, not when each entry was published: the channel time is
+// kept as that separate claim, never read as the items' publication time.
+test("RSS keeps a channel snapshot time apart from the items' publication times", async () => {
+  const read = async (channelSnapshotDate: boolean) => fetchRss({
+    id: "test-feed", config: { feedUrl: `${site}/snapshot.xml`, ...(channelSnapshotDate ? { channelSnapshotDate: true } : {}) },
+    participation_mode: "editorial", cursor: null,
+  } as never, { force: true });
+  const [defaultFirst, defaultSecond] = (await read(false)).candidates;
+  assert.equal(defaultFirst!.publishedAt, null);
+  assert.equal(defaultFirst!.sourceUpdatedAt ?? null, null);
+  assert.equal(defaultSecond!.publishedAt?.toISOString(), "2026-09-29T12:00:00.000Z");
+  const [snapshotFirst, snapshotSecond] = (await read(true)).candidates;
+  assert.equal(snapshotFirst!.publishedAt, null, "the snapshot time is not the entry's publication time");
+  assert.equal(snapshotFirst!.sourceUpdatedAt?.toISOString(), "2026-09-30T12:00:00.000Z");
+  assert.equal(snapshotSecond!.publishedAt?.toISOString(), "2026-09-29T12:00:00.000Z", "an entry keeps its own date");
+  assert.equal(snapshotSecond!.sourceUpdatedAt?.toISOString(), "2026-09-30T12:00:00.000Z");
 });
 
 test("feed text that only teases the article is a summary: the page is fetched before judging", async () => {

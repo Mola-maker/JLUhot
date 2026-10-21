@@ -218,11 +218,11 @@ export async function enrichDetails(candidates: CollectionCandidate[], source: S
   return reads;
 }
 
-async function store(sourceId: string, runId: number, candidates: CollectionCandidate[], backfill: string | null) {
+async function store(sourceId: string, runId: number, candidates: CollectionCandidate[], backfill: string | null, snapshot = false) {
   let created = 0;
   let revised = 0;
   for (const c of candidates) {
-    const material = { ...c, sourceId, via: "fetch" as const, backfill };
+    const material = { ...c, sourceId, via: "fetch" as const, backfill, snapshot: snapshot && !c.publishedAt && !!c.sourceUpdatedAt };
     let res;
     try { res = await upsertMaterial(material); }
     catch (error) {
@@ -359,7 +359,10 @@ export async function collectSource(sourceId: string, opts: { force?: boolean; x
     // Kept while the listing offers them; a 304 offers no entries and keeps the last ones.
     if (found) nextCursor.detailDatedOut = datedOut;
     if (!d || !Object.keys(nextCursor.detailDatedOut ?? {}).length) delete nextCursor.detailDatedOut;
-    const stored = await store(sourceId, run!.id, candidates, firstImport ? "first-import" : null);
+    // A ranking feed's first import is its current list, not an archive: the entries' publication time
+    // stays unknown (the channel time is only the snapshot), and they enter the ordinary article flow.
+    const snapshot = source.config.channelSnapshotDate === true && candidates.some((c) => !c.publishedAt && c.sourceUpdatedAt);
+    const stored = await store(sourceId, run!.id, candidates, firstImport && !snapshot ? "first-import" : null, snapshot);
     ({ created, revised } = stored);
     for (const id of await fillScheduledPublications(sourceId)) await queueProcessing(id);
 

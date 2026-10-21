@@ -176,6 +176,10 @@ export async function fetchRss(source: SourceRow, opts: { force?: boolean } = {}
 
   const channel = doc.rss?.channel ?? doc["rdf:RDF"];
   if (channel) {
+    // A ranking feed dates its snapshot, not its entries: the channel time joins each entry as that
+    // separate claim (Candidate.sourceUpdatedAt, stored in articles.source_updated_at). It never
+    // substitutes for an entry's publication time, which stays unknown.
+    const channelUpdated = source.config.channelSnapshotDate === true ? parseDate(text(channel.pubDate)) : null;
     const items = arr(doc.rss?.channel?.item ?? doc["rdf:RDF"]?.item);
     for (const it of items) {
       const guid = text(it.guid);
@@ -206,6 +210,7 @@ export async function fetchRss(source: SourceRow, opts: { force?: boolean } = {}
         title,
         author: text(it["dc:creator"]) || text(it.author) || null,
         ...readPublicationDate((text(it.pubDate) || text(it["dc:date"]) || text(it.published)).replace(/星期[一二三四五六日天]/, ""), source.config.publishedAtUtcOffset),
+        ...(channelUpdated ? { sourceUpdatedAt: channelUpdated } : {}),
         ...feedText(bodyHtml, description ? stripTags(description) : null, source, !mediaFile && !video),
         ...(videoExcerpt ? { excerpt: videoExcerpt } : {}),
         media: media.slice(0, 6),

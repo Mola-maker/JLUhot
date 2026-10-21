@@ -42,6 +42,8 @@ export interface MaterialInput {
   /** Original precision: YYYY-MM-DD, an exact ISO timestamp, or unknown. */
   publicationTime?: string | null;
   sourceUpdatedAt?: Date | null;
+  /** A ranking feed's current snapshot: the publication time stays unknown, but the entry is news. */
+  snapshot?: boolean;
   excerpt?: string | null;
   bodyHtml?: string | null;
   bodyText?: string | null;
@@ -84,22 +86,27 @@ export interface TimelineDecision {
 
 const UNKNOWN_TIME = "unknown-publication-time";
 const STALE = "stale-on-discovery";
+// A ranking feed's current list: the entries' publication time stays unknown, but the list itself is
+// news, not an archive. The channel time is stored separately as the snapshot (source_updated_at).
+const CURRENT_SNAPSHOT = "current-snapshot";
 
 /** The one timeline rule shared by every entrance. */
-export function decideTimeline(claimed: Date | null | undefined, discoveredAt: Date, explicitBackfill?: string | null, aheadMs = FUTURE_TOLERANCE_MS): TimelineDecision {
+export function decideTimeline(claimed: Date | null | undefined, discoveredAt: Date, explicitBackfill?: string | null, aheadMs = FUTURE_TOLERANCE_MS, snapshot = false): TimelineDecision {
   let publishedAt: Date | null = claimed && Number.isFinite(claimed.getTime()) ? claimed : null;
   if (publishedAt && publishedAt.getTime() > discoveredAt.getTime() + aheadMs) publishedAt = null;
   let backfillReason: string | null = null;
   if (explicitBackfill) backfillReason = explicitBackfill;
-  else if (!publishedAt) backfillReason = UNKNOWN_TIME;
+  else if (!publishedAt) backfillReason = snapshot ? CURRENT_SNAPSHOT : UNKNOWN_TIME;
   else if (publishedAt && discoveredAt.getTime() - publishedAt.getTime() > STALE_ON_DISCOVERY_MS) backfillReason = STALE;
-  const backfill = backfillReason !== null;
+  // A current snapshot is not a backfill: it enters the ordinary article flow, dated by its discovery,
+  // and its reason only records why the publication time stays unknown.
+  const backfill = backfillReason !== null && backfillReason !== CURRENT_SNAPSHOT;
   const timelineAt = backfill && publishedAt ? publishedAt : discoveredAt;
   return { publishedAt, timelineAt, backfill, backfillReason };
 }
 
 /** The backfill a material was given on arrival (a first import, a reported backfill), apart from what its date made it. */
-export const explicitBackfill = (reason: string | null): string | null => (reason === UNKNOWN_TIME || reason === STALE ? null : reason);
+export const explicitBackfill = (reason: string | null): string | null => (reason === UNKNOWN_TIME || reason === STALE || reason === CURRENT_SNAPSHOT ? null : reason);
 
 /**
  * Fill a missing publication date from the original listing or page, against the first discovery
@@ -237,7 +244,7 @@ async function upsertIn(db: Db, m: MaterialInput): Promise<MaterialResult> {
   const discoveredAt = m.discoveredAt ?? new Date();
   const title = collapseWhitespace(m.title).slice(0, 1000) || m.url;
 
-  const t = decideTimeline(m.publishedAt, discoveredAt, m.backfill);
+  const t = decideTimeline(m.publishedAt, discoveredAt, m.backfill, FUTURE_TOLERANCE_MS, m.snapshot === true);
   // Most listing entries are already stored. Lock and reuse those rows without attempting an
   // insert of their body and raw payload on every collection. The unique key still arbitrates
   // concurrent first discoveries; after losing that insert, read and lock its winner.
@@ -299,6 +306,13 @@ async function upsertIn(db: Db, m: MaterialInput): Promise<MaterialResult> {
   const next = contentHash({ title, bodyText, excerpt });
   if (!time && existing!.content_hash === next) {
     await updatePresentation(db, existing!.id, { html: m.bodyHtml, media: m.media });
+    // A ranking feed's snapshot moves on while the entry does not: record the newer snapshot time
+    // without a revision, so it costs no re-analysis. An entry with its own publication time keeps the
+    // ordinary revision rule for its source time.
+    if (!m.publishedAt && m.sourceUpdatedAt) {
+      await db`UPDATE articles SET source_updated_at = ${m.sourceUpdatedAt}
+        WHERE id = ${existing!.id} AND source_updated_at IS DISTINCT FROM ${m.sourceUpdatedAt}`;
+    }
     return unchanged;
   }
   if (!time && existing!.content_hash === null) {

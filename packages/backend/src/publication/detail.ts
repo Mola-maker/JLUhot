@@ -101,6 +101,7 @@ export async function loadItemDetail(id: string, language: "zh" | "original" = "
       reason: null,
       tags: [],
       x: null,
+      snapshotAt: null,
       readingMode: "summary-only",
       author: null,
       body: null,
@@ -163,6 +164,7 @@ export async function loadItemDetail(id: string, language: "zh" | "original" = "
   const sameEvent = (await seatHolders([row], now)).get(row.id) ?? null;
   const item: SiteItemDetail = {
     ...summary,
+    snapshotAt: row.published_at ? null : row.snapshot_at?.toISOString() ?? null,
     x,
     ...(sameEvent ? { reason: null, sameEvent } : {}),
     readingMode: "full",
@@ -200,6 +202,8 @@ export async function exportMarkdown(id: string): Promise<{ filename: string; bo
   lines.push(`- 来源：${publicSourceName(row.source_name)}`);
   // Without a reliable date from the original, the time it was collected says so.
   lines.push(row.published_at ? `- 发布时间：${row.published_at.toISOString()}` : `- 收录时间：${row.discovered_at.toISOString()}`);
+  // A ranking feed dates its list, not the entry: the snapshot is its own line, never a publication time.
+  if (!row.published_at && row.snapshot_at) lines.push(`- 榜单快照：${row.snapshot_at.toISOString()}`);
   lines.push(`- ${SITE.name}：${itemUrl(row.id)}`);
   lines.push(`- 原文：${row.url}`, "");
   if (row.summary) lines.push("## 摘要", "", row.summary, "");
