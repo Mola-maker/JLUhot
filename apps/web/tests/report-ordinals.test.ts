@@ -3,12 +3,12 @@
 // issue older than the index losing its number; the calendar marking that issue as not published; the
 // daily archive counting 400 issues beside a masthead that numbers 405.
 import assert from "node:assert/strict";
-import { createServer } from "node:http";
 import { after, before, test } from "node:test";
+import * as cheerio from "cheerio";
 import type { ReportDetail, ReportKind, ReportNavigationEntry } from "@aihot/contracts/site";
 import { isoWeekLabel } from "@aihot/contracts/time";
 import { issueNumber, periodGrid } from "../app/features/report/format.ts";
-import { startWebServer, type WebServer } from "./web-server.ts";
+import { fakeApi, startWebServer, type WebServer } from "./web-server.ts";
 
 const kinds: ReportKind[] = ["daily", "weekly", "monthly"];
 const keys = Object.fromEntries(kinds.map((kind) => [kind, Array.from({ length: 405 }, (_, i) => {
@@ -25,31 +25,29 @@ function report(kind: ReportKind, key: string): ReportDetail {
   };
 }
 let web: WebServer;
-const api = createServer((req, res) => {
-  const path = new URL(req.url!, "http://api.local").pathname;
-  res.setHeader("Content-Type", "application/json");
-  if (path === "/api/site/meta") return res.end(JSON.stringify({ changelogVersion: "2026-09-28T12:00" }));
-  if (path === "/api/site/reports/daily") return res.end(JSON.stringify({ kind: "daily", items: index("daily").map((entry) => ({ ...entry, count: 1 })) }));
+const api = fakeApi((url) => {
+  const path = url.pathname;
+  if (path === "/api/site/reports/daily") return { kind: "daily", items: index("daily").map((entry) => ({ ...entry, count: 1 })) };
   const match = /^\/api\/site\/reports\/(daily|weekly|monthly)\/(.+)$/.exec(path);
   if (match) {
     const kind = match[1] as ReportKind;
     const key = match[2]!;
-    if (key === "latest-page") return res.end(JSON.stringify({ index: index(kind), report: report(kind, keys[kind].at(-1)!) }));
-    if (key.startsWith("navigation/")) return res.end(JSON.stringify({ items: index(kind) }));
-    if (keys[kind].includes(key)) return res.end(JSON.stringify(report(kind, key)));
+    if (key === "latest-page") return { index: index(kind), report: report(kind, keys[kind].at(-1)!) };
+    if (key.startsWith("navigation/")) return { items: index(kind) };
+    if (keys[kind].includes(key)) return report(kind, key);
   }
-  res.statusCode = 404;
-  res.end(JSON.stringify({ code: "not_found" }));
 });
 
 before(async () => { web = await startWebServer(api); });
 after(() => web.stop());
 
-/** The masthead's visible text (the archive's has the same frame). */
+/** The report's visible header text (the archive's has the same frame). */
 function masthead(html: string): string {
-  const header = /<header class="pt-5 lg:pt-0">([\s\S]*?)<\/header>/.exec(html);
-  assert.ok(header, "the report masthead is rendered");
-  return header[1]!.replace(/<[^>]+>/g, "");
+  const $ = cheerio.load(html);
+  const start = $("#report-start");
+  const header = start.is("h1") ? start.closest("header") : start.find("header").first();
+  assert.ok(header.length, "the report masthead is rendered");
+  return header.text();
 }
 
 for (const kind of kinds) {

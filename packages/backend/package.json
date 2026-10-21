@@ -12,6 +12,7 @@
     "@mozilla/readability": "0.6.0",
     "@paralleldrive/cuid2": "3.3.0",
     "cheerio": "1.2.0",
+    "entities": "8.1.0",
     "fast-xml-parser": "5.11.1",
     "linkedom": "0.18.13",
     "marked": "18.0.14",

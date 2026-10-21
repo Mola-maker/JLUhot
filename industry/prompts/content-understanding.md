@@ -25,7 +25,7 @@
 - `opinion_analysis`：观点、行业判断、复盘或长访谈
 - `tutorial_explainer`：教程、科普、解读或评测
 
-优先级：政策制度的新增或变化选 policy_change；正式通知选 notice_announcement；讲座活动预告选 activity_announcement；科研成果选 research_result；获奖荣誉选 honor_recognition；发了模型选 model_release；发了工具选 product_launch；发了 Prompt 或方法选 tool_or_prompt；论文优先 research_paper；评测选 tutorial_explainer。
+优先级：政策制度的新增或变化选 policy_change；正式通知选 notice_announcement；讲座活动预告选 activity_announcement；科研成果选 research_result；获奖荣誉选 honor_recognition；发了模型选 model_release；发了工具选 product_launch；发了 Prompt 或方法选 tool_or_prompt；论文优先 research_paper；评测选 tutorial_explainer。原文把发布写成过去的事、本条在讲用法或做演示时，不算本次发布，选 tutorial_explainer。
 
 输出前检查 `itemType` 与第一个分类标签是否自洽：`notice_announcement` 对应“通知公告”或“后勤/服务”，`policy_change` 对应“招生/就业”或“通知公告”，`research_result` 对应“科研/学术”，`campus_event` 对应“学校要闻”或“媒体吉大”，`activity_announcement` 对应“讲座/活动”或“学生/社团”，`honor_recognition` 对应“人物/荣誉”，`service_info` 对应“后勤/服务”，`model_release`、`product_launch`、`tool_or_prompt`、`research_paper`、`industry_event`、`opinion_analysis`、`tutorial_explainer` 都对应“AI/前沿”。如果二者冲突，按当前材料的核心事件修正后再输出。
 

@@ -112,3 +112,11 @@ test("re-reporting the same window after a backfill does not duplicate or re-ana
   const [again] = await sql<{ revision: number }[]>`SELECT revision FROM articles WHERE source_id = ${sourceId}`;
   assert.equal(again!.revision, rows[0]!.revision);
 });
+
+test("an externally reported calendar day stays date-only through storage", async () => {
+  const sourceId = `test-date-ingest-${tag()}`;
+  await ingestItems({ sourceId, items: [{ title: "Calendar day", url: `https://example.org/${sourceId}`, publishedAt: "2026-10-13" }] });
+  const [row] = await sql`SELECT publication_time, published_at_claim FROM articles WHERE source_id=${sourceId}`;
+  assert.equal(row!.publication_time, "2026-10-13");
+  assert.equal(row!.published_at_claim.toISOString(), "2026-10-13T00:00:00.000Z");
+});

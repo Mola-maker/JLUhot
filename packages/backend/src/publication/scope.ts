@@ -4,6 +4,12 @@
 // rule in SQL, and grouping takes the composite rule from here too. What a publication holds is
 // derived once, at publish time, by publish.ts and rules.ts.
 import { sql } from "../db.ts";
+import { independentSelectedSources } from './rules.ts';
+
+/** These reports share their fact's display slot; independent sources keep their own selected card. */
+export function foldableSelectionCondition() {
+  return sql`(NOT p.selected OR p.source_id <> ALL(${independentSelectedSources()}::text[]))`;
+}
 
 /**
  * Only confirmed news enters p.selected (publish.ts). The release timestamp also supports
@@ -29,8 +35,8 @@ export function selectedCondition(now: Date) {
 }
 
 /**
- * The selected set as machines receive it (v1, RSS, the sync ledger): one seat per fact, held by its
- * representative (publish.ts settleSeats).
+ * The selected set as machines receive it (v1, RSS, the sync ledger): the representative of ordinary
+ * reports of each fact, plus any independently displayed selected articles (publish.ts settleSeats).
  */
 export function seatedCondition(now: Date) {
   return sql`p.visibility = 'public' AND p.selected AND p.seat AND p.visible_after <= ${now}`;
@@ -51,6 +57,17 @@ export function latestCompositeCondition(article: ReturnType<typeof sql>) {
   return sql`(SELECT scope_analysis.output->>'scope' = 'composite' FROM analyses scope_analysis
     WHERE scope_analysis.article_id = ${article}
     ORDER BY scope_analysis.input_revision DESC, scope_analysis.id DESC LIMIT 1) IS TRUE`;
+}
+
+/**
+ * Evidence for a later identity decision: not a composite and not explicitly withdrawn.
+ * A summary-only report or one awaiting publication keeps its existing eligibility.
+ * Historical memberships and judgements are retained independently of this predicate.
+ */
+export function groupingEvidenceCondition(article: ReturnType<typeof sql>) {
+  return sql`NOT ${latestCompositeCondition(article)} AND NOT EXISTS (
+    SELECT 1 FROM publications grouping_publication
+    WHERE grouping_publication.article_id = ${article} AND grouping_publication.visibility = 'withdrawn')`;
 }
 
 /** `fa` links report `p` to a fact as evidence: a primary or report membership, never a composite. */

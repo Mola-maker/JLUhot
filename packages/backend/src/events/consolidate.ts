@@ -2,16 +2,17 @@
 // one story that grew two roots: their roots are compared directly and merge only when both models
 // see one story. Stories that stay apart though reports keep tying them list each other as related
 // events (linkRelatedStories, hourly).
-import { modelFor } from "../editorial/models.ts";
+import { modelRoute } from "../editorial/models.ts";
 import { beijingDate } from "@aihot/contracts/time";
 import { sql } from "../db.ts";
 import { chatJson } from "../providers/llm.ts";
 import { completeReceipt } from "../providers/receipts.ts";
-import { latestCompositeCondition } from "../publication/scope.ts";
+import { groupingEvidenceCondition } from "../publication/scope.ts";
 import { mergeStoryInto } from "./merge.ts";
 import { RECALL_DAYS, rootFactOf } from "./recall.ts";
+import { firmTie, latestJudgements, RELATED_MIN_REPORTS } from "./related.ts";
 import {
-  PAIR_SYSTEM, PairSchema, RELATE_PROMPT_VERSION, STORY_REVIEW_MIN_CONFIDENCE, TIE_MIN_CONFIDENCE, firmlyTied, pairUser,
+  PAIR_SYSTEM, PairSchema, RELATE_PROMPT_VERSION, STORY_REVIEW_MIN_CONFIDENCE, firmlyTied, pairUser,
   type Relation, type ReportView,
 } from "./relate.ts";
 
@@ -27,17 +28,18 @@ interface StoryRoot {
 async function storyRoot(storyId: number): Promise<StoryRoot | null> {
   const [row] = await sql<{
     subject: string | null; action: string | null; object: string | null; occurred_at: Date | null;
-    title: string; summary: string | null; source: string; first_party: boolean; at: Date; started_at: Date; roundup: boolean;
+    title: string; summary: string | null; source: string; first_party: boolean; at: Date | null; publicationTime: string | null; started_at: Date; roundup: boolean;
   }[]>`
     SELECT f.subject, f.action, f.object, f.occurred_at, p.title, p.summary, s.name AS source, (s.tier = 'T1') AS first_party,
-           coalesce(p.published_at, p.discovered_at) AS at,
+           p.published_at AS at, a.publication_time AS "publicationTime",
            (SELECT min(coalesce(q.published_at, q.discovered_at)) FROM fact_articles z JOIN publications q ON q.article_id = z.article_id
-            WHERE z.fact_id = f.id AND z.role IN ('primary', 'report') AND NOT ${latestCompositeCondition(sql`z.article_id`)}) AS started_at,
+            WHERE z.fact_id = f.id AND z.role IN ('primary', 'report') AND ${groupingEvidenceCondition(sql`z.article_id`)}) AS started_at,
            EXISTS (SELECT 1 FROM grouping_decisions d WHERE d.article_id = fa.article_id AND d.verdict = 'roundup') AS roundup
     FROM facts f
     JOIN stories st ON st.id = f.story_id AND st.origin <> 'manual'
-    JOIN fact_articles fa ON fa.fact_id = f.id AND fa.role IN ('primary', 'report') AND NOT ${latestCompositeCondition(sql`fa.article_id`)}
+    JOIN fact_articles fa ON fa.fact_id = f.id AND fa.role IN ('primary', 'report') AND ${groupingEvidenceCondition(sql`fa.article_id`)}
     JOIN publications p ON p.article_id = fa.article_id
+    JOIN articles a ON a.id = p.article_id
     JOIN sources s ON s.id = p.source_id
     WHERE f.id = ${rootFactOf(storyId)}
     ORDER BY (fa.role = 'primary') DESC, p.timeline_at ASC
@@ -46,7 +48,7 @@ async function storyRoot(storyId: number): Promise<StoryRoot | null> {
   return {
     storyId, at: row.started_at, roundup: row.roundup,
     report: {
-      title: row.title, source: row.source, firstParty: row.first_party, at: row.at, summary: row.summary,
+      title: row.title, source: row.source, firstParty: row.first_party, at: row.at, publicationTime: row.publicationTime, summary: row.summary,
       frame: { subject: row.subject, action: row.action, object: row.object, occurredAt: row.occurred_at ? beijingDate(row.occurred_at) : null },
     },
   };
@@ -54,7 +56,7 @@ async function storyRoot(storyId: number): Promise<StoryRoot | null> {
 
 async function judgeStories(capability: "group" | "groupReview", a: StoryRoot, b: StoryRoot): Promise<{ relation: Relation; confidence: number; difference: string; receiptId: number }> {
   const res = await chatJson({
-    model: await modelFor(capability), purpose: capability === "group" ? "group_story" : "group_story_review", subject: `story:${a.storyId}:${b.storyId}`,
+    ...await modelRoute(capability), purpose: capability === "group" ? "group_story" : "group_story_review", subject: `story:${a.storyId}:${b.storyId}`,
     promptVersion: RELATE_PROMPT_VERSION, system: PAIR_SYSTEM, user: pairUser(a.report, b.report), schema: PairSchema, temperature: 0, maxTokens: 400,
   });
   return { relation: res.data.relation, confidence: res.data.confidence, difference: res.data.difference, receiptId: res.receiptId };
@@ -119,9 +121,6 @@ export async function consolidate(storyIds: number[]): Promise<Consolidation[]> 
   return out;
 }
 
-/** Reports that must tie two stories that stay apart before each lists the other as a related event. */
-const RELATED_MIN_REPORTS = 2;
-
 /**
  * A multi-topic digest is a report of the story's root fact (digests now only mention facts, so this
  * marks older stories; one that mentions the root does not count): the story is neither merged nor
@@ -129,30 +128,27 @@ const RELATED_MIN_REPORTS = 2;
  */
 const startedByRoundup = (story: ReturnType<typeof sql>) => sql`EXISTS (
   SELECT 1 FROM fact_articles r JOIN grouping_decisions d ON d.article_id = r.article_id AND d.verdict = 'roundup'
-  WHERE r.fact_id = ${rootFactOf(story)} AND r.role <> 'mention')`;
+  WHERE r.fact_id = ${rootFactOf(story)} AND r.role <> 'mention' AND ${groupingEvidenceCondition(sql`r.article_id`)})`;
 
 /**
  * Stories that stay apart although reports tie them (a reaction, a development of a later fact, a
- * comparison) list each other as related events: at least two reports decided in the recall window,
- * each firmly tied to a fact of the other story, none of them a roundup, neither story started by
- * one. A single tie is too often a stray answer about one candidate among many. Links are only
- * added; a merged story drops out where links are read.
+ * comparison) list each other as related events: at least two reports whose latest judgement
+ * (related.ts, the same one public reads check) falls in the recall window, each firmly tied to a fact
+ * of the other story, none of them a roundup, neither story started by one. A single tie is too often a stray answer about one candidate among many. Links are only
+ * added; public reads check saved bridge evidence after explicit changes, independently of the
+ * recall window. A merged story drops out where links are read.
  */
 export async function linkRelatedStories(): Promise<{ added: number }> {
   const [row] = await sql<{ added: number }[]>`
-    WITH latest AS (
-      SELECT DISTINCT ON (article_id) article_id, verdict, candidates FROM grouping_decisions
-      WHERE created_at > now() - make_interval(days => ${RECALL_DAYS}) ORDER BY article_id, id DESC),
+    WITH latest AS (${latestJudgements(sql`d.created_at > now() - make_interval(days => ${RECALL_DAYS})`)}),
     ties AS (
       SELECT DISTINCT l.article_id, own.story_id AS a, other.story_id AS b
       FROM latest l
-      JOIN fact_articles fa ON fa.article_id = l.article_id AND fa.role IN ('primary', 'report') AND NOT ${latestCompositeCondition(sql`fa.article_id`)}
+      JOIN fact_articles fa ON fa.article_id = l.article_id AND fa.role IN ('primary', 'report') AND ${groupingEvidenceCondition(sql`fa.article_id`)}
       JOIN facts own ON own.id = fa.fact_id
       CROSS JOIN LATERAL jsonb_array_elements(l.candidates) c
       JOIN facts other ON other.id = (c->>'id')::bigint
-      WHERE l.verdict IN ('same-fact', 'same-url', 'new-fact-in-story', 'new-story')
-        AND c->>'relation' IN ('SAME_OCCURRENCE', 'SAME_STORY') AND (c->>'confidence')::numeric >= ${TIE_MIN_CONFIDENCE}
-        AND other.story_id <> own.story_id),
+      WHERE ${firmTie(sql`l`, sql`c`)} AND other.story_id <> own.story_id),
     pairs AS (
       SELECT least(a, b) AS x, greatest(a, b) AS y FROM ties GROUP BY 1, 2 HAVING count(DISTINCT article_id) >= ${RELATED_MIN_REPORTS}),
     linked AS (

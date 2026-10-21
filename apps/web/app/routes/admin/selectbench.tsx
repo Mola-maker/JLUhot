@@ -58,10 +58,10 @@ export default function SelectBench({ loaderData }: Route.ComponentProps) {
                 pad={false}
               >
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[720px] text-[13px]">
+                  <table className="w-full min-w-[900px] text-[13px]">
                     <thead>
                       <tr className="border-b border-line text-left text-[12px] text-ink-3">
-                        {["模型", "准确率", "精确率", "召回率", "F1", "入选比例", "金标入选", "失败", "平均耗时", "输入/输出 tokens"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}
+                        {["模型", "有效输出准确率", "覆盖率", "完整准确率", "精确率", "召回率", "F1", "入选比例", "金标入选", "失败", "平均耗时", "输入/输出 tokens"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}
                       </tr>
                     </thead>
                     <tbody>
@@ -69,8 +69,10 @@ export default function SelectBench({ loaderData }: Route.ComponentProps) {
                         const s = r.summary[m] ?? {};
                         return (
                           <tr key={m} className="border-b border-line/70 last:border-0">
-                            <td className="px-3 py-2 font-medium text-ink">{m} {m === best && r.models.length > 1 && <Badge tone="accent">F1 最高</Badge>}</td>
+                            <td className="px-3 py-2 font-medium text-ink">{m} {m === best && r.models.length > 1 && <Badge tone="accent">有效输出 F1 最高</Badge>}</td>
                             <td className="num px-3 py-2">{pct(s.accuracy)}</td>
+                            <td className="num px-3 py-2">{pct(s.coverage)}</td>
+                            <td className="num px-3 py-2 font-semibold text-ink">{pct(s.completeAccuracy)}</td>
                             <td className="num px-3 py-2">{pct(s.precision)}</td>
                             <td className="num px-3 py-2">{pct(s.recall)}</td>
                             <td className="num px-3 py-2 font-semibold text-ink">{pct(s.f1)}</td>

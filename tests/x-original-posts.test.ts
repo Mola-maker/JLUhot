@@ -20,7 +20,7 @@ const provider = await stub((_hit, req) => {
   const content = step === "prefilter" ? { label: "UNKNOWN", reason: "No standalone text evidence" }
     : step === "score" ? { attentionScore: req.body.includes("high-score") ? SELECTING_SCORE : 12 }
     : step === "structure" ? { category: "campus", tags: [], subjects: [], scope: "single", fact: null }
-    : step === "understand" ? { itemType: "product_update", authorRole: "principal", tags: [], editorialJudgment: "产品更新", titleZh: "实际正文标题", summaryZh: "这是实际正文的中文摘要。" }
+    : step === "understand" ? { itemType: "product_launch", authorRole: "principal", tags: [], editorialJudgment: "产品更新", titleZh: "实际正文标题", summaryZh: "这是实际正文的中文摘要。" }
     : "title_zh: 实际正文标题\nbody_zh: 这是实际正文的中文摘要。";
   return { choices: [{ message: { content: typeof content === "string" ? content : JSON.stringify(content) } }] };
 });
@@ -32,9 +32,11 @@ before(async () => {
 });
 after(async () => { await app.close(); await provider.close(); await stopBoss(); await closeDb(); });
 
+/** A post found and published a minute ago (released by `released`): a rolling window that ends at the reader's clock holds it. */
 async function post(name: string, text: string) {
   const url = `https://x.com/fixture/status/${name}-${source}`;
-  const material = await upsertMaterial({ sourceId: source, url, title: text, bodyText: text, bodyStatus: "ok", via: "fetch", publishedAt: new Date(),
+  const minuteAgo = new Date(Date.now() - 60_000);
+  const material = await upsertMaterial({ sourceId: source, url, title: text, bodyText: text, bodyStatus: "ok", via: "fetch", publishedAt: minuteAgo, discoveredAt: minuteAgo,
     xPost: { tweetId: name, authorName: "Fixture", handle: "fixture", text,
       media: [{ kind: "image", url: "https://example.org/screenshot.png", width: 757, height: 549 }] } });
   return { id: material.articleId, url };

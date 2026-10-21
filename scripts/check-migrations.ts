@@ -12,8 +12,9 @@ export function checkMigrations(root: string, base: string): string[] {
   const before = new Set(git("ls-tree", "-r", "--name-only", base).split("\n").filter(isMigration));
   const current = git("ls-files", "--cached", "--others", "--exclude-standard").split("\n").filter((file) => isMigration(file) && existsSync(path.join(root, file)));
   const problems: string[] = [];
+  const normalizeSql = (text: string) => text.replace(/\r\n/g, "\n");
   for (const file of before) {
-    if (!existsSync(path.join(root, file)) || readFileSync(path.join(root, file), "utf8") !== git("show", `${base}:${file}`)) problems.push(`${file}: deployed migrations are immutable; add a new migration`);
+    if (!existsSync(path.join(root, file)) || normalizeSql(readFileSync(path.join(root, file), "utf8")) !== normalizeSql(git("show", `${base}:${file}`))) problems.push(`${file}: deployed migrations are immutable; add a new migration`);
   }
   const names = new Set<string>();
   for (const file of current) {

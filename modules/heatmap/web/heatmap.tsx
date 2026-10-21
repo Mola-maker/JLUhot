@@ -60,14 +60,14 @@ function Cell({ day, hour, count, max, current, delay, reduce }: {
       initial={reduce ? false : { opacity: 0, scale: 0.3 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay, duration: 0.25, ease: "easeOut" }}
-      className="group relative size-3 rounded-[3px]"
+      className="group relative size-3 rounded-mark"
       style={{ background: CELL_BG[level(count, max)] }}
       title={`${day} ${range} · ${count} 篇`}
     >
       {current && (
         <span aria-hidden="true" className="pointer-events-none absolute -inset-0.5">
-          <span className="absolute inline-flex size-full animate-ping rounded-[4px] bg-accent opacity-60" />
-          <span className="absolute inline-flex size-full rounded-[4px] ring-2 ring-accent" />
+          <span className="absolute inline-flex size-full animate-ping rounded-mark bg-accent opacity-60" />
+          <span className="absolute inline-flex size-full rounded-mark ring-2 ring-accent" />
         </span>
       )}
       <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 hidden -translate-x-1/2 rounded-control bg-surface px-2 py-1 text-[11px] whitespace-nowrap text-ink shadow-lg ring-1 ring-line group-hover:block">
@@ -122,7 +122,7 @@ function Heatmap({ data }: { data: HeatmapResponse }) {
       <div className="mt-3 flex items-center justify-end gap-1.5 text-[11px] text-ink-4">
         少
         {CELL_BG.map((bg) => (
-          <span key={bg} className="size-3 rounded-[3px]" style={{ background: bg }} />
+          <span key={bg} className="size-3 rounded-mark" style={{ background: bg }} />
         ))}
         多
       </div>

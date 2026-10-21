@@ -8,17 +8,18 @@
  * 和相邻类别的边界在哪（总的归类原则写在 prompts/structure.md 里）。
  * commentary 标出评论类（教程、观点）：日报写过的事又有评论类的后续报道，只占一行快讯（报道它的信源够多时除外）。
  * 没归上类的资料在日报里放进第一个 key 为 industry 的类别所在的节（没有就放最后一节）。
+ * tagColor 是飞书推送卡片里跟在标题后面的这一类小标签的颜色（飞书 text_tag 的颜色名）。
  * feedLabel 是分类 RSS 标题里的名字（不写就用 label）。公开接口、RSS 和 MCP 里要把一类并进另一类发布，写在站点设置里（site/site.ts 的 PUBLIC_CATEGORIES）。
  */
 export const CATEGORIES = [
-  { key: "notices", label: "通知公告", section: "通知公告", guide: "面向师生的正式通知、公告与公示：教务安排、考试报名、选课、放假、停水停电、后勤服务、规章制度。与学校要闻的边界：通知是要求读者按之行动或知晓的安排，不是对已发生事件的报道；讲座与活动预告归学生·社团。" },
-  { key: "campus", label: "学校要闻", feedLabel: "学校要闻", section: "学校要闻", guide: "学校层面的重要新闻：重要会议与决策、校领导重要活动、上级视察、发展规划、重大合作与揭牌。院系的一般性工作报道归学生·社团或科研学术；纯安排类文字归通知公告。" },
-  { key: "research", label: "科研学术", section: "学术前沿", guide: "学术前沿：科研成果与前沿论文发表（顶刊与重要期刊的论文优先）、项目立项、科研奖励、学术会议与学科建设进展。学者因成果获得个人荣誉归人物·荣誉；讲座预告归学生·社团。" },
-  { key: "admissions", label: "招生就业", section: "招生就业", guide: "招生政策与简章、保研推免、考研复试、学位与培养政策变化，以及招聘会、双选会、就业指导。政策文件的原文通知归通知公告，解读与进展归此类。" },
-  { key: "student", label: "学生·社团", section: "学生·社团", guide: "学生工作与院系动态、社团活动、讲座与活动预告、校园文化与体育赛事。正式的事务性安排归通知公告；学术成果归科研学术。" },
-  { key: "people", label: "人物·荣誉", section: "人物·荣誉", guide: "师生获奖、荣誉表彰、学者事迹与校友动态。成果本身归科研学术，授予人的荣誉归此类。" },
-  { key: "ai", label: "AI前沿", feedLabel: "AI前沿", section: "未来智能", guide: "未来智能板块的 AI 行业动态：新模型与重要产品发布、重要研究进展、行业大事。边界：吉林大学自己的 AI 科研成果归科研学术，学校的信息化建设通知归通知公告；这里只收来自 AI 行业信源的行业消息。" },
-] as const satisfies ReadonlyArray<{ key: string; label: string; feedLabel?: string; section: string; guide: string; commentary?: true }>;
+  { key: "notices", tagColor: "blue", label: "通知公告", section: "通知公告", guide: "面向师生的正式通知、公告与公示：教务安排、考试报名、选课、放假、停水停电、后勤服务、规章制度。与学校要闻的边界：通知是要求读者按之行动或知晓的安排，不是对已发生事件的报道；讲座与活动预告归学生·社团。" },
+  { key: "campus", tagColor: "green", label: "学校要闻", feedLabel: "学校要闻", section: "学校要闻", guide: "学校层面的重要新闻：重要会议与决策、校领导重要活动、上级视察、发展规划、重大合作与揭牌。院系的一般性工作报道归学生·社团或科研学术；纯安排类文字归通知公告。" },
+  { key: "research", tagColor: "violet", label: "科研学术", section: "学术前沿", guide: "学术前沿：科研成果与前沿论文发表（顶刊与重要期刊的论文优先）、项目立项、科研奖励、学术会议与学科建设进展。学者因成果获得个人荣誉归人物·荣誉；讲座预告归学生·社团。" },
+  { key: "admissions", tagColor: "orange", label: "招生就业", section: "招生就业", guide: "招生政策与简章、保研推免、考研复试、学位与培养政策变化，以及招聘会、双选会、就业指导。政策文件的原文通知归通知公告，解读与进展归此类。" },
+  { key: "student", tagColor: "turquoise", label: "学生·社团", section: "学生·社团", guide: "学生工作与院系动态、社团活动、讲座与活动预告、校园文化与体育赛事。正式的事务性安排归通知公告；学术成果归科研学术。" },
+  { key: "people", tagColor: "purple", label: "人物·荣誉", section: "人物·荣誉", guide: "师生获奖、荣誉表彰、学者事迹与校友动态。成果本身归科研学术，授予人的荣誉归此类。" },
+  { key: "ai", tagColor: "indigo", label: "AI前沿", feedLabel: "AI前沿", section: "未来智能", guide: "未来智能板块的 AI 行业动态：新模型与重要产品发布、重要研究进展、行业大事。边界：吉林大学自己的 AI 科研成果归科研学术，学校的信息化建设通知归通知公告；这里只收来自 AI 行业信源的行业消息。" },
+] as const satisfies ReadonlyArray<{ key: string; tagColor: string; label: string; feedLabel?: string; section: string; guide: string; commentary?: true }>;
 
 /**
  * 这个行业最受关注的一类发布（AI 行业是新模型）：日报报头的“N 个新模型”、改分类后修订已出的报告都按它数。
@@ -72,12 +73,12 @@ export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
 // ── 机构与主体 ──────────────────────────────────────────────────────────────────────────
 
 /**
- * 机构主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。
- * aliases 给结构抽取模型看；otherNames 是机构自己的其他称呼（官方账号名、子品牌），
- * 把事实的主体对到发布方时也认它们。
+ * 机构与公司主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。
+ * aliases 给结构抽取模型看；orgNames 是机构或公司发消息时开头用的组织名，otherNames 是其他称呼（官方账号名、子品牌）；
+ * 这些名字都用于识别事实主体和发布方。
  */
-export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[]; otherNames?: string[] }> = {
-  jlu: { name: "吉林大学", displayTag: "吉林大学", aliases: ["吉林大学", "吉大", "JLU", "Jilin University"], otherNames: ["吉林大学新闻网", "吉大新闻"] },
+export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[]; orgNames?: string[]; otherNames?: string[] }> = {
+  jlu: { name: "吉林大学", displayTag: "吉林大学", aliases: ["吉林大学", "吉大", "JLU", "Jilin University"], orgNames: ["吉林大学"], otherNames: ["吉林大学新闻网", "吉大新闻"] },
   "jlu-news-center": { name: "吉林大学新闻中心", displayTag: null, aliases: ["吉林大学新闻中心", "吉大新闻中心", "党委宣传部"] },
   "jlu-president-office": { name: "校长办公室", displayTag: null, aliases: ["校长办公室", "校长办"] },
   "jlu-registrar": { name: "教务处", displayTag: "教务处", aliases: ["教务处", "本科生院"] },
@@ -101,21 +102,21 @@ export const ENTITIES: Record<string, { name: string; displayTag: string | null;
   "world-labs": { name: "World Labs", displayTag: null, aliases: ["World Labs"] },
   "thinking-machines": { name: "Thinking Machines Lab", displayTag: null, aliases: ["Thinking Machines"] },
   amd: { name: "AMD", displayTag: null, aliases: ["AMD", "Advanced Micro Devices"] },
-  openai: { name: "OpenAI", displayTag: "OpenAI", aliases: ["OpenAI", "ChatGPT", "Sora", "Codex", "GPT"], otherNames: ["OpenAI Developers"] },
-  anthropic: { name: "Anthropic", displayTag: "Anthropic", aliases: ["Anthropic", "Claude"], otherNames: ["Claude Code"] },
-  google: { name: "Google", displayTag: "Google", aliases: ["Google", "DeepMind", "Gemini", "谷歌"], otherNames: ["Google DeepMind", "Google Research", "Google AI", "Google Labs", "Google Cloud"] },
-  deepseek: { name: "DeepSeek", displayTag: "DeepSeek", aliases: ["DeepSeek", "深度求索"] },
-  qwen: { name: "千问 Qwen", displayTag: null, aliases: ["Qwen", "通义", "阿里"], otherNames: ["通义千问", "千问", "千问APP", "Qwen Team", "通义实验室", "阿里巴巴", "Alibaba", "阿里云", "Alibaba Cloud"] },
-  kimi: { name: "Kimi / 月之暗面", displayTag: null, aliases: ["Kimi", "月之暗面", "Moonshot"], otherNames: ["Moonshot AI"] },
-  minimax: { name: "MiniMax", displayTag: null, aliases: ["MiniMax", "海螺"], otherNames: ["稀宇科技"] },
-  zhipu: { name: "智谱 GLM", displayTag: null, aliases: ["智谱", "GLM", "Z.ai"], otherNames: ["智谱AI", "Zhipu", "Zhipu AI"] },
-  xai: { name: "xAI", displayTag: "xAI", aliases: ["xAI", "Grok"], otherNames: ["SpaceXAI"] },
-  meta: { name: "Meta", displayTag: "Meta", aliases: ["Meta", "Llama"], otherNames: ["Meta AI", "AI at Meta"] },
-  microsoft: { name: "Microsoft", displayTag: "Microsoft", aliases: ["Microsoft", "微软", "Copilot"], otherNames: ["Microsoft Research", "Microsoft AI"] },
-  nvidia: { name: "NVIDIA", displayTag: null, aliases: ["NVIDIA", "英伟达"] },
-  "hugging-face": { name: "Hugging Face", displayTag: "Hugging Face", aliases: ["Hugging Face"], otherNames: ["HuggingFace"] },
-  cursor: { name: "Cursor", displayTag: null, aliases: ["Cursor", "Anysphere"] },
-  openrouter: { name: "OpenRouter", displayTag: null, aliases: ["OpenRouter"] },
+  openai: { name: "OpenAI", displayTag: "OpenAI", aliases: ["OpenAI", "ChatGPT", "Sora", "Codex", "GPT"], orgNames: ["OpenAI"], otherNames: ["OpenAI Developers"] },
+  anthropic: { name: "Anthropic", displayTag: "Anthropic", aliases: ["Anthropic", "Claude"], orgNames: ["Anthropic"], otherNames: ["Claude Code"] },
+  google: { name: "Google", displayTag: "Google", aliases: ["Google", "DeepMind", "Gemini", "谷歌"], orgNames: ["Google DeepMind", "Google Research", "Google", "DeepMind", "谷歌"], otherNames: ["Google AI", "Google Labs", "Google Cloud"] },
+  deepseek: { name: "DeepSeek", displayTag: "DeepSeek", aliases: ["DeepSeek", "深度求索"], orgNames: ["DeepSeek", "深度求索"] },
+  qwen: { name: "千问 Qwen", displayTag: null, aliases: ["Qwen", "通义", "阿里"], orgNames: ["通义千问", "通义实验室", "阿里巴巴", "阿里云", "阿里", "Qwen Team", "Qwen", "Alibaba"], otherNames: ["千问", "千问APP", "Alibaba Cloud"] },
+  kimi: { name: "Kimi / 月之暗面", displayTag: null, aliases: ["Kimi", "月之暗面", "Moonshot"], orgNames: ["Moonshot AI", "月之暗面", "Kimi"] },
+  minimax: { name: "MiniMax", displayTag: null, aliases: ["MiniMax", "海螺"], orgNames: ["MiniMax", "稀宇科技"] },
+  zhipu: { name: "智谱 GLM", displayTag: null, aliases: ["智谱", "GLM", "Z.ai"], orgNames: ["智谱AI", "智谱", "Zhipu AI", "Z.ai"], otherNames: ["Zhipu"] },
+  xai: { name: "xAI", displayTag: "xAI", aliases: ["xAI", "Grok"], orgNames: ["SpaceX Super Intelligence", "SpaceXAI", "SpaceXSI", "xAI"], otherNames: ["Grok Bot"] },
+  meta: { name: "Meta", displayTag: "Meta", aliases: ["Meta", "Llama"], orgNames: ["Meta Superintelligence Labs", "Meta AI", "Meta"], otherNames: ["AI at Meta", "Muse"] },
+  microsoft: { name: "Microsoft", displayTag: "Microsoft", aliases: ["Microsoft", "微软", "Copilot"], orgNames: ["Microsoft Research", "Microsoft AI", "Microsoft", "微软"] },
+  nvidia: { name: "NVIDIA", displayTag: null, aliases: ["NVIDIA", "英伟达"], orgNames: ["NVIDIA", "英伟达"] },
+  "hugging-face": { name: "Hugging Face", displayTag: "Hugging Face", aliases: ["Hugging Face"], orgNames: ["Hugging Face", "HuggingFace"] },
+  cursor: { name: "Cursor", displayTag: null, aliases: ["Cursor", "Anysphere"], orgNames: ["Cursor"] },
+  openrouter: { name: "OpenRouter", displayTag: null, aliases: ["OpenRouter"], orgNames: ["OpenRouter"] },
 };
 
 /**

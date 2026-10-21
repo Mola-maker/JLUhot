@@ -1,7 +1,7 @@
 // Site activity for the heatmap module: listed publications per Beijing hour over recent days.
 // The public scope is scope.ts's listedCondition, like every other public exit; a withdrawn or not
 // yet released report never counts.
-import { addDays, beijingDate, beijingMidnight } from "@aihot/contracts/time";
+import { addDays, beijingDate, beijingMidnight, BEIJING_TIMEZONE } from "@aihot/contracts/time";
 import { sql } from "../db.ts";
 import { cached } from "../lib/cache.ts";
 import { listedCondition } from "./scope.ts";
@@ -29,8 +29,8 @@ async function queryActivityGrid(days: number, now: Date): Promise<ActivityGrid>
   const from = beijingMidnight(first);
   const to = new Date(beijingMidnight(last).getTime() + 86_400_000);
   const cells = await sql<ActivityCell[]>`
-    SELECT to_char(p.timeline_at AT TIME ZONE 'Asia/Shanghai', 'YYYY-MM-DD') AS day,
-           extract(hour FROM p.timeline_at AT TIME ZONE 'Asia/Shanghai')::int AS hour,
+    SELECT to_char(p.timeline_at AT TIME ZONE ${BEIJING_TIMEZONE}, 'YYYY-MM-DD') AS day,
+           extract(hour FROM p.timeline_at AT TIME ZONE ${BEIJING_TIMEZONE})::int AS hour,
            count(*)::int AS count
     FROM publications p
     WHERE ${listedCondition(now)} AND p.timeline_at >= ${from} AND p.timeline_at < ${to}
