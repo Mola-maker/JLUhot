@@ -1,5 +1,6 @@
-// Failures: domestic feeds inherit the proxy's overseas DNS/CDN; a host exception leaks to
-// unrelated domains or redirect targets; choosing a direct route bypasses the private-address guard.
+// Failures: a domestic name resolved by an intercepted local DNS (fake-IP TUN) is blocked before it
+// ever leaves, so a Chinese public host must resolve through the configured proxy; a host exception
+// leaks to unrelated domains or redirect targets; choosing a direct route bypasses the guard.
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { after, test } from "node:test";
@@ -33,11 +34,10 @@ after(async () => {
   await new Promise<void>(resolve => proxy.close(() => resolve()));
 });
 
-test("configured public host uses the direct transport without consulting proxy DNS", async () => {
-  mock.get("https://domestic.invalid").intercept({ path: "/feed" }).reply(200, "feed");
+test("a Chinese public host uses the configured proxy", async () => {
   const before = proxyHits;
-  assert.equal((await guardedFetch("https://domestic.invalid/feed", { timeoutMs: 1000 })).text(), "feed");
-  assert.equal(proxyHits, before);
+  await assert.rejects(guardedFetch("https://news.jlu.edu.cn/feed", { timeoutMs: 1000 }));
+  assert.ok(proxyHits > before);
 });
 
 test("a redirect recalculates routing for its destination instead of inheriting the exception", async () => {

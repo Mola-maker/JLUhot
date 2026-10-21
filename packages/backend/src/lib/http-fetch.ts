@@ -10,12 +10,12 @@ import { DEPLOYMENT, SITE } from "@aihot/site";
 /**
  * Where a request leaves the host. "egress" (collection, bodies, images and other public data) goes
  * through the egress proxy when EGRESS_PROXY_URL is set (for example a rule-based proxy that connects
- * .cn and .local names and Chinese or private addresses directly and sends the rest abroad); the names
- * and address literals such a proxy would connect directly, plus the deployment's verified direct
- * hosts, are connected here instead, so the
- * connect-time address check still applies. A name sent through the proxy is resolved through it too
- * (egress-proxy.ts), and the tunnel goes to the checked address. "direct" is for paid APIs called
- * straight (SocialData, Dajiala) and the site's own addresses.
+ * Chinese and private addresses directly and sends the rest abroad). Every name goes through it,
+ * domestic ones included: a name sent through the proxy is resolved through it too (egress-proxy.ts)
+ * and the tunnel goes to the checked address, so a local resolver that answers with intercepted
+ * addresses cannot fail the check. Only .local names, address literals (no DNS to lie about) and the
+ * deployment's verified direct hosts are connected here instead, where the connect-time address check
+ * applies. "direct" is for paid APIs called straight (SocialData, Dajiala) and the site's own addresses.
  */
 export type EgressRoute = "egress" | "direct";
 
@@ -30,7 +30,7 @@ function egressResolver() {
 function proxied(url: URL, route: EgressRoute): boolean {
   if (route !== "egress" || !config.egressProxyUrl) return false;
   const host = url.hostname.replace(/^\[|\]$/g, "").toLowerCase();
-  return net.isIP(host) === 0 && !host.endsWith(".cn") && !host.endsWith(".local") && !DEPLOYMENT.directFetchHosts.includes(host);
+  return net.isIP(host) === 0 && !host.endsWith(".local") && !DEPLOYMENT.directFetchHosts.includes(host);
 }
 
 function dispatcherFor(viaProxy: boolean): Dispatcher | undefined {

@@ -16,7 +16,10 @@ import { evidenceCondition, listedCondition, ownFactEvidenceCondition } from "..
 
 /** Each category's section; several categories may share one, in the order the pack lists them. */
 export const SECTION_OF: Record<string, string> = Object.fromEntries(CATEGORIES.map((c) => [c.key, c.section]));
-export const SECTION_ORDER: readonly string[] = [...new Set(CATEGORIES.map((c) => c.section))];
+/** The sections an issue leads with: academia and future intelligence first, the rest in pack order. */
+const LEAD_SECTIONS = ["学术前沿", "未来智能", "学校要闻"];
+const PACK_SECTIONS = [...new Set(CATEGORIES.map((c) => c.section))];
+export const SECTION_ORDER: readonly string[] = [...LEAD_SECTIONS, ...PACK_SECTIONS.filter((s) => !LEAD_SECTIONS.includes(s))];
 /** An item without a category goes into the section of the industry category, else into the last one. */
 const DEFAULT_SECTION = SECTION_OF.industry ?? SECTION_ORDER.at(-1)!;
 export const sectionOf = (category: string | null) => SECTION_OF[category ?? ""] ?? DEFAULT_SECTION;
@@ -289,6 +292,12 @@ async function judgedReports(start: Date, end: Date): Promise<number> {
 function importance(e: { score: number | null; participants: number; official: boolean; followUp: boolean }): number {
   return (e.score ?? 50) + 5 * Math.log2(1 + e.participants) + (e.official ? 5 : 0) - (e.followUp ? 6 : 0);
 }
+/** The daily leans academic and intelligent: its two lead categories earn this much over the rest. */
+const DAILY_LEAD_BONUS: Readonly<Record<string, number>> = { research: 8, ai: 8 };
+/** How much an event matters to a reader of the day, with the lead-category lift the daily adds. */
+export function dailyImportance(e: { score: number | null; participants: number; official: boolean; followUp: boolean; category?: string | null }): number {
+  return importance(e) + (e.category ? DAILY_LEAD_BONUS[e.category] ?? 0 : 0);
+}
 
 interface Fact { key: string; rows: ReportRow[]; selected: boolean; sources: string[]; at: number }
 
@@ -354,11 +363,12 @@ export async function dailyEdition(date: string, start: Date, end: Date): Promis
     return {
       entry, category: rep.category, tags: rep.tags, storyId, sourceIds, authority: representativePriority(rep), previous,
       mentions: new Set(storyId === null ? named.filter((n) => ids.has(n.article_id)).map((n) => n.story_id) : []),
-      importance: importance({
+      importance: dailyImportance({
         score,
         participants: storyId === null ? sourceIds.size : participants.get(storyId) ?? sourceIds.size,
         official: fs.some((f) => f.rows.some((r) => representativePriority(r) < 3)),
         followUp: !!previous,
+        category: rep.category,
       }),
     };
   });
