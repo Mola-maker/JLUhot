@@ -516,3 +516,56 @@ test("stories that reports keep tying together without merging list each other a
     answerAll = false;
   }
 });
+
+test("a paper source's report groups standalone without a model call and leaves its old fact", async () => {
+  // The candidate would otherwise be judged: any paid call fails the fast path's promise.
+  hold = gate();
+  hold.open();
+  const hits = provider.hits();
+  const paperSource = `test-papers-${T}`;
+  await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, next_fetch_at, config)
+            VALUES (${paperSource}, 'Test journal', 'rss', 'T1', 'editorial', '2100-01-01', ${sql.json({ _aihot: { paper: true } })})`;
+  const paper = await report("paper");
+  await sql`UPDATE articles SET source_id = ${paperSource} WHERE id = ${paper}`;
+
+  // A pre-existing automatic membership and heat evidence go; the fact's other reports keep theirs.
+  await sql`INSERT INTO fact_articles (fact_id, article_id, role) VALUES (${factId}, ${paper}, 'report')`;
+  await sql`INSERT INTO story_signals (story_id, article_id, participant_key, source_id, kind, observed_at)
+            VALUES (${storyId}, ${paper}, ${`source:${paperSource}`}, ${paperSource}, 'editorial', now())`;
+  const result = await groupArticle(paper);
+  assert.equal(result.verdict, "standalone");
+  assert.equal(provider.hits(), hits, "no model call decides a paper's grouping");
+  const membership = await sql`SELECT 1 FROM fact_articles WHERE article_id = ${paper}`;
+  assert.equal(membership.length, 0, "the paper holds no fact membership");
+  const [signal] = await sql`SELECT 1 FROM story_signals WHERE article_id = ${paper}`;
+  assert.equal(signal, undefined, "the paper adds no heat evidence");
+  const [row] = await sql<{ selection_adds_value: boolean | null; selection_value_reason: string | null }[]>
+    `SELECT selection_adds_value, selection_value_reason FROM articles WHERE id = ${paper}`;
+  assert.equal(row!.selection_adds_value, true, "the paper enters selection");
+  assert.ok(row!.selection_value_reason?.includes("论文"), "the value reason says why");
+});
+
+test("a paper source's report keeps a manual membership and a manual keep-standalone override", async () => {
+  const paperSource = `test-papers-manual-${T}`;
+  await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, next_fetch_at, config)
+            VALUES (${paperSource}, 'Test journal manual', 'rss', 'T1', 'editorial', '2100-01-01', ${sql.json({ _aihot: { paper: true } })})`;
+  // Manual membership wins over the fast path.
+  const joined = await report("paper-manual");
+  await sql`UPDATE articles SET source_id = ${paperSource} WHERE id = ${joined}`;
+  await sql`INSERT INTO fact_articles (fact_id, article_id, role, manual) VALUES (${factId}, ${joined}, 'report', true)`;
+  const hits = provider.hits();
+  const result = await groupArticle(joined);
+  assert.equal(result.verdict, "manual");
+  assert.equal(result.factId, factId);
+  assert.equal(provider.hits(), hits, "the manual decision is kept without a model call");
+
+  // A manual keep-standalone override also wins, saying the same thing the fast path would.
+  const alone = await report("paper-override");
+  await sql`UPDATE articles SET source_id = ${paperSource} WHERE id = ${alone}`;
+  await sql`INSERT INTO grouping_overrides (article_id, reason, actor) VALUES (${alone}, '编辑要求独立成条', 'test-editor')`;
+  const overridden = await groupArticle(alone);
+  assert.equal(overridden.verdict, "manual");
+  assert.equal(overridden.factId, undefined);
+  const membership = await sql`SELECT 1 FROM fact_articles WHERE article_id = ${alone}`;
+  assert.equal(membership.length, 0, "the override keeps the paper standalone");
+});

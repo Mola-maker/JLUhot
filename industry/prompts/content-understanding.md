@@ -12,7 +12,7 @@
 
 - `notice_announcement`：面向师生的正式通知、公告与公示
 - `policy_change`：招生、培养、学位、资助等政策制度的新增或变化
-- `research_result`：科研成果、论文、项目立项或学术奖励
+- `research_result`：科研成果报道、项目立项或学术奖励（单篇论文的发表选 research_paper）
 - `campus_event`：学校或院系已发生的新闻事件、会议、合作
 - `activity_announcement`：讲座、竞赛、招新、文体活动预告
 - `honor_recognition`：师生获奖、荣誉或人物事迹
@@ -20,14 +20,14 @@
 - `model_release`：新模型或大版本更新
 - `product_launch`：新产品、工具或重大功能更新
 - `tool_or_prompt`：可直接复用的方法、Prompt、Skill 或技巧
-- `research_paper`：论文、研究或技术报告
+- `research_paper`：单篇论文、研究或技术报告的发表（期刊论文、会议论文、预印本）
 - `industry_event`：融资、收购、监管、诉讼、商业动作或人事
 - `opinion_analysis`：观点、行业判断、复盘或长访谈
 - `tutorial_explainer`：教程、科普、解读或评测
 
 优先级：政策制度的新增或变化选 policy_change；正式通知选 notice_announcement；讲座活动预告选 activity_announcement；科研成果选 research_result；获奖荣誉选 honor_recognition；发了模型选 model_release；发了工具选 product_launch；发了 Prompt 或方法选 tool_or_prompt；论文优先 research_paper；评测选 tutorial_explainer。原文把发布写成过去的事、本条在讲用法或做演示时，不算本次发布，选 tutorial_explainer。
 
-输出前检查 `itemType` 与第一个分类标签是否自洽：`notice_announcement` 对应“通知公告”或“后勤/服务”，`policy_change` 对应“招生/就业”或“通知公告”，`research_result` 对应“科研/学术”，`campus_event` 对应“学校要闻”或“媒体吉大”，`activity_announcement` 对应“讲座/活动”或“学生/社团”，`honor_recognition` 对应“人物/荣誉”，`service_info` 对应“后勤/服务”，`model_release`、`product_launch`、`tool_or_prompt`、`research_paper`、`industry_event`、`opinion_analysis`、`tutorial_explainer` 都对应“AI/前沿”。如果二者冲突，按当前材料的核心事件修正后再输出。
+输出前检查 `itemType` 与第一个分类标签是否自洽：`notice_announcement` 对应“通知公告”或“后勤/服务”，`policy_change` 对应“招生/就业”或“通知公告”，`research_result` 对应“科研/学术”，`research_paper` 对应“论文”或“AI/前沿”，`campus_event` 对应“学校要闻”或“媒体吉大”，`activity_announcement` 对应“讲座/活动”或“学生/社团”，`honor_recognition` 对应“人物/荣誉”，`service_info` 对应“后勤/服务”，`model_release`、`product_launch`、`tool_or_prompt`、`industry_event`、`opinion_analysis`、`tutorial_explainer` 都对应“AI/前沿”。如果二者冲突，按当前材料的核心事件修正后再输出。
 
 ## 作者角色
 
@@ -39,7 +39,7 @@
 
 ## 标签
 
-`tags` 输出 1–6 个字符串。第一个必须从以下分类标签中选一个：通知公告、学校要闻、科研/学术、招生/就业、学生/社团、人物/荣誉、讲座/活动、后勤/服务、媒体吉大、AI/前沿、其他。
+`tags` 输出 1–6 个字符串。第一个必须从以下分类标签中选一个：通知公告、学校要闻、科研/学术、论文、招生/就业、学生/社团、人物/荣誉、讲座/活动、后勤/服务、媒体吉大、AI/前沿、其他。单篇论文的发表（期刊、会议、预印本，来自学术信源）用“论文”；围绕论文的新闻报道、综述或本校成果动态（项目、奖励）用“科研/学术”。
 
 其后可选 0–5 个适用标签，并且只能来自以下两个白名单：
 

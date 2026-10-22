@@ -61,6 +61,7 @@ interface ArticleRow {
   signal_group_id: string | null;
   first_party: boolean;
   participation_mode: string;
+  config: Record<string, any>;
   backfill: boolean;
 }
 
@@ -267,7 +268,7 @@ export async function groupArticle(articleId: string, opts: GroupOptions = {}): 
 async function decide(articleId: string, opts: GroupOptions, revision: number, recheckSelection: boolean): Promise<GroupResult> {
   const [a] = await sql<ArticleRow[]>`
     SELECT a.id, a.revision, a.title, a.url, a.published_at, a.publication_time, a.discovered_at, a.grouped_at, a.body_text, a.x_post, a.backfill,
-           s.id AS source_id, s.name AS source_name, s.signal_group_id, (s.tier = 'T1') AS first_party, s.participation_mode
+           s.id AS source_id, s.name AS source_name, s.signal_group_id, (s.tier = 'T1') AS first_party, s.participation_mode, s.config
     FROM articles a JOIN sources s ON s.id = a.source_id WHERE a.id = ${articleId}`;
   if (a && a.revision !== revision) throw new GroupingSupersededError("Grouping input changed before it was read");
   if (!a) return { verdict: "skipped" };
@@ -289,7 +290,11 @@ async function decide(articleId: string, opts: GroupOptions, revision: number, r
   const composite = an?.composite === true;
   const unsupported = an?.output?.scope === "unknown" && !an.output.fact;
   const historical = isHistorical(a);
-  const left = composite || unsupported || historical
+  // A paper source's report never founds or joins an event (`_aihot.paper`): it is analysed, scored,
+  // selected and published like any report, but it stands alone, so the grouping step buys no model
+  // call for it. A regroup takes it out of any fact it joined before the source was marked.
+  const paper = a.config?._aihot?.paper === true;
+  const left = composite || unsupported || historical || paper
     ? await sql.begin(async (tx) => { await lockCurrentRevision(tx, articleId, a.revision); return resetAutomatic(tx, articleId); })
     : [];
 
@@ -297,6 +302,11 @@ async function decide(articleId: string, opts: GroupOptions, revision: number, r
   if (historical) {
     await markGrouped(articleId, a.revision, { addsValue: true, reason: "历史资料按原文时间归档" });
     return { verdict: "historical" };
+  }
+  if (paper) {
+    await markGrouped(articleId, a.revision, { addsValue: true, reason: "论文独立成条，不参与事件归组" });
+    for (const id of left) await enqueue(QUEUES.digest, { storyId: id }, { singletonKey: `story:${id}` });
+    return { verdict: "standalone" };
   }
 
   if (opts.signalOnly || a.participation_mode !== "editorial") return groupSignal(a, source, observedAt);

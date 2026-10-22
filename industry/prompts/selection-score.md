@@ -23,7 +23,7 @@
 
 - `notice_announcement`：面向师生的正式通知、公告与公示
 - `policy_change`：招生、培养、学位、资助等政策制度的新增或变化
-- `research_result`：科研成果、论文、项目立项或学术奖励
+- `research_result`：科研成果报道、项目立项或学术奖励（单篇论文的发表选 research_paper）
 - `campus_event`：学校或院系已发生的新闻事件、会议、合作
 - `activity_announcement`：讲座、竞赛、招新、文体活动预告
 - `honor_recognition`：师生获奖、荣誉或人物事迹

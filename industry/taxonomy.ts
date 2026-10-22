@@ -14,11 +14,12 @@
 export const CATEGORIES = [
   { key: "notices", tagColor: "blue", label: "通知公告", section: "通知公告", guide: "面向师生的正式通知、公告与公示：教务安排、考试报名、选课、放假、停水停电、后勤服务、规章制度。与学校要闻的边界：通知是要求读者按之行动或知晓的安排，不是对已发生事件的报道；讲座与活动预告归学生·社团。" },
   { key: "campus", tagColor: "green", label: "学校要闻", feedLabel: "学校要闻", section: "学校要闻", guide: "学校层面的重要新闻：重要会议与决策、校领导重要活动、上级视察、发展规划、重大合作与揭牌。院系的一般性工作报道归学生·社团或科研学术；纯安排类文字归通知公告。" },
-  { key: "research", tagColor: "violet", label: "科研学术", section: "学术前沿", guide: "学术前沿：科研成果与前沿论文发表（顶刊与重要期刊的论文优先）、项目立项、科研奖励、学术会议与学科建设进展。学者因成果获得个人荣誉归人物·荣誉；讲座预告归学生·社团。" },
+  { key: "research", tagColor: "violet", label: "科研学术", section: "学术前沿", guide: "学术前沿：科研成果报道、项目立项、科研奖励、学术会议与学科建设进展。单篇论文的发表（本校或外校，含期刊与预印本）归论文类；学者因成果获得个人荣誉归人物·荣誉；讲座预告归学生·社团。" },
+  { key: "papers", tagColor: "violet", label: "论文", section: "论文", guide: "单篇论文与研究报告的发表：期刊论文、会议论文、预印本（arXiv）与期刊目录动态。以论文本身为主体，来源多为 Nature、Science、Cell、arXiv 一类学术信源；围绕论文的新闻报道与综述归科研学术，校内的成果报道（项目、奖励）也归科研学术。" },
   { key: "admissions", tagColor: "orange", label: "招生就业", section: "招生就业", guide: "招生政策与简章、保研推免、考研复试、学位与培养政策变化，以及招聘会、双选会、就业指导。政策文件的原文通知归通知公告，解读与进展归此类。" },
   { key: "student", tagColor: "turquoise", label: "学生·社团", section: "学生·社团", guide: "学生工作与院系动态、社团活动、讲座与活动预告、校园文化与体育赛事。正式的事务性安排归通知公告；学术成果归科研学术。" },
   { key: "people", tagColor: "purple", label: "人物·荣誉", section: "人物·荣誉", guide: "师生获奖、荣誉表彰、学者事迹与校友动态。成果本身归科研学术，授予人的荣誉归此类。" },
-  { key: "ai", tagColor: "indigo", label: "AI前沿", feedLabel: "AI前沿", section: "未来智能", guide: "未来智能板块的 AI 行业动态：新模型与重要产品发布、重要研究进展、行业大事。边界：吉林大学自己的 AI 科研成果归科研学术，学校的信息化建设通知归通知公告；这里只收来自 AI 行业信源的行业消息。" },
+  { key: "ai", tagColor: "indigo", label: "AI前沿", feedLabel: "AI前沿", section: "未来智能", guide: "未来智能板块的 AI 行业动态：新模型与重要产品发布、重要研究进展、行业大事。边界：吉林大学自己的 AI 科研成果归科研学术，单篇论文的发表归论文类，学校的信息化建设通知归通知公告；这里只收来自 AI 行业信源的行业消息。" },
 ] as const satisfies ReadonlyArray<{ key: string; tagColor: string; label: string; feedLabel?: string; section: string; guide: string; commentary?: true }>;
 
 /**
@@ -41,7 +42,7 @@ export const ITEM_TYPES = ["notice_announcement", "policy_change", "research_res
 
 /** 每篇资料的第一个标签必须是这些“分类标签”之一。 */
 export const CATEGORY_TAGS = [
-  "通知公告", "学校要闻", "科研/学术", "招生/就业", "学生/社团", "人物/荣誉", "讲座/活动", "后勤/服务", "媒体吉大", "AI/前沿", "其他",
+  "通知公告", "学校要闻", "科研/学术", "论文", "招生/就业", "学生/社团", "人物/荣誉", "讲座/活动", "后勤/服务", "媒体吉大", "AI/前沿", "其他",
 ] as const;
 
 /** 可选的主题标签。 */
@@ -57,7 +58,6 @@ export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
   通知: "通知公告", 公告: "通知公告", 公示: "通知公告", 通告: "通知公告",
   要闻: "学校要闻", 焦点: "学校要闻", 焦点新闻: "学校要闻",
   科研: "科研/学术", 学术: "科研/学术", 研究: "科研/学术",
-  论文: "论文/成果", 成果: "论文/成果", 科研成果: "论文/成果",
   讲座: "学术讲座", 报告会: "学术讲座", 讲座预告: "学术讲座",
   推免: "保研/推免", 保研: "保研/推免", 研究生推免: "保研/推免",
   考研: "考研/复试", 复试: "考研/复试",

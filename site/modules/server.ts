@@ -1,5 +1,6 @@
 // The backend of the site's modules, installed by the api and the worker when they start (site/modules/index.ts).
 import type { ServerModule } from "@aihot/backend/modules";
 import heatmap from "@aihot/heatmap/server";
+import papers from "@aihot/papers/server";
 
-export const SERVER_MODULES: readonly ServerModule[] = [heatmap];
+export const SERVER_MODULES: readonly ServerModule[] = [heatmap, papers];

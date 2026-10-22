@@ -582,7 +582,8 @@
       "config": {
         "feedUrl": "https://www.nature.com/nature.rss",
         "_aihot": {
-          "initialBackfillLimit": 10
+          "initialBackfillLimit": 10,
+          "paper": true
         }
       },
       "tier": "T1",
@@ -603,7 +604,8 @@
       "config": {
         "feedUrl": "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science",
         "_aihot": {
-          "initialBackfillLimit": 10
+          "initialBackfillLimit": 10,
+          "paper": true
         }
       },
       "tier": "T1",
@@ -624,7 +626,8 @@
       "config": {
         "feedUrl": "https://www.cell.com/cell/current.rss",
         "_aihot": {
-          "initialBackfillLimit": 10
+          "initialBackfillLimit": 10,
+          "paper": true
         }
       },
       "tier": "T1",
@@ -645,7 +648,8 @@
       "config": {
         "feedUrl": "https://www.nature.com/natmachintell.rss",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 8,
+          "paper": true
         }
       },
       "tier": "T1",
@@ -666,7 +670,8 @@
       "config": {
         "feedUrl": "https://rss.arxiv.org/rss/cs.AI",
         "_aihot": {
-          "initialBackfillLimit": 10
+          "initialBackfillLimit": 10,
+          "paper": true
         }
       },
       "tier": "T1_5",
@@ -684,12 +689,21 @@
       "id": "rss-nature-materials",
       "name": "Nature Materials",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.nature.com/nm.rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.nature.com/nm.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "材料"],
+      "tags": [
+        "顶刊",
+        "材料"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -697,12 +711,21 @@
       "id": "rss-nature-biotechnology",
       "name": "Nature Biotechnology",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.nature.com/nbt.rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.nature.com/nbt.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "生物技术"],
+      "tags": [
+        "顶刊",
+        "生物技术"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -710,12 +733,21 @@
       "id": "rss-nature-methods",
       "name": "Nature Methods",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.nature.com/nmeth.rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.nature.com/nmeth.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "科研方法"],
+      "tags": [
+        "顶刊",
+        "科研方法"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -723,12 +755,21 @@
       "id": "rss-nature-physics",
       "name": "Nature Physics",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.nature.com/nphys.rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.nature.com/nphys.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "物理"],
+      "tags": [
+        "顶刊",
+        "物理"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -736,12 +777,21 @@
       "id": "rss-nature-electronics",
       "name": "Nature Electronics",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.nature.com/natelectron.rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.nature.com/natelectron.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "电子信息"],
+      "tags": [
+        "顶刊",
+        "电子信息"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -749,12 +799,21 @@
       "id": "rss-nature-sustainability",
       "name": "Nature Sustainability",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.nature.com/natsustain.rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.nature.com/natsustain.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "可持续发展"],
+      "tags": [
+        "顶刊",
+        "可持续发展"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -762,12 +821,21 @@
       "id": "rss-the-lancet",
       "name": "The Lancet",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.thelancet.com/action/showFeed?type=etoc&feed=rss&jc=LANCET", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.thelancet.com/action/showFeed?type=etoc&feed=rss&jc=LANCET",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "医学"],
+      "tags": [
+        "顶刊",
+        "医学"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -775,12 +843,21 @@
       "id": "rss-bmj",
       "name": "BMJ",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.bmj.com/rss/recent.xml", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.bmj.com/rss/recent.xml",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "医学"],
+      "tags": [
+        "顶刊",
+        "医学"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -788,12 +865,21 @@
       "id": "rss-nejm",
       "name": "New England Journal of Medicine",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "医学"],
+      "tags": [
+        "顶刊",
+        "医学"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -801,12 +887,21 @@
       "id": "rss-elife",
       "name": "eLife",
       "kind": "rss",
-      "config": { "feedUrl": "https://elifesciences.org/rss/recent.xml", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://elifesciences.org/rss/recent.xml",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "生命科学"],
+      "tags": [
+        "顶刊",
+        "生命科学"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -814,12 +909,21 @@
       "id": "rss-physical-review-letters",
       "name": "Physical Review Letters",
       "kind": "rss",
-      "config": { "feedUrl": "https://feeds.aps.org/rss/recent/prl.xml", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://feeds.aps.org/rss/recent/prl.xml",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "物理"],
+      "tags": [
+        "顶刊",
+        "物理"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -827,12 +931,21 @@
       "id": "rss-science-robotics",
       "name": "Science Robotics",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=scirobotics", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=scirobotics",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "机器人"],
+      "tags": [
+        "顶刊",
+        "机器人"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -840,12 +953,21 @@
       "id": "rss-science-advances",
       "name": "Science Advances",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "综合"],
+      "tags": [
+        "顶刊",
+        "综合"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -853,12 +975,21 @@
       "id": "rss-cell-patterns",
       "name": "Patterns",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.cell.com/patterns/current.rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.cell.com/patterns/current.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "交叉科学"],
+      "tags": [
+        "顶刊",
+        "交叉科学"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -866,12 +997,21 @@
       "id": "rss-molecular-cell",
       "name": "Molecular Cell",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.cell.com/molecular-cell/current.rss", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://www.cell.com/molecular-cell/current.rss",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "生命科学"],
+      "tags": [
+        "顶刊",
+        "生命科学"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -879,12 +1019,21 @@
       "id": "rss-plos-biology",
       "name": "PLOS Biology",
       "kind": "rss",
-      "config": { "feedUrl": "https://journals.plos.org/plosbiology/feed/atom", "_aihot": { "initialBackfillLimit": 10 } },
+      "config": {
+        "feedUrl": "https://journals.plos.org/plosbiology/feed/atom",
+        "_aihot": {
+          "initialBackfillLimit": 10,
+          "paper": true
+        }
+      },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["顶刊", "生命科学"],
+      "tags": [
+        "顶刊",
+        "生命科学"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -892,12 +1041,21 @@
       "id": "rss-github-trending-daily",
       "name": "GitHub Trending · 日榜（榜单快照）",
       "kind": "rss",
-      "config": { "feedUrl": "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml", "channelSnapshotDate": true, "_aihot": { "initialBackfillLimit": 15 } },
+      "config": {
+        "feedUrl": "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml",
+        "channelSnapshotDate": true,
+        "_aihot": {
+          "initialBackfillLimit": 15
+        }
+      },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 60,
-      "tags": ["开源", "榜单"],
+      "tags": [
+        "开源",
+        "榜单"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -905,12 +1063,22 @@
       "id": "rss-github-trending-weekly",
       "name": "GitHub Trending · 周榜（榜单快照）",
       "kind": "rss",
-      "config": { "feedUrl": "https://mshibanami.github.io/GitHubTrendingRSS/weekly/all.xml", "channelSnapshotDate": true, "_aihot": { "initialBackfillLimit": 15 } },
+      "config": {
+        "feedUrl": "https://mshibanami.github.io/GitHubTrendingRSS/weekly/all.xml",
+        "channelSnapshotDate": true,
+        "_aihot": {
+          "initialBackfillLimit": 15
+        }
+      },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 60,
-      "tags": ["开源", "榜单", "周榜"],
+      "tags": [
+        "开源",
+        "榜单",
+        "周榜"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -918,12 +1086,19 @@
       "id": "rss-andrej-karpathy",
       "name": "Andrej Karpathy",
       "kind": "rss",
-      "config": { "feedUrl": "https://karpathy.bearblog.dev/feed/", "_aihot": { "initialBackfillLimit": 8 } },
+      "config": {
+        "feedUrl": "https://karpathy.bearblog.dev/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["个人"],
+      "tags": [
+        "个人"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -931,12 +1106,19 @@
       "id": "rss-lilian-weng",
       "name": "Lilian Weng",
       "kind": "rss",
-      "config": { "feedUrl": "https://lilianweng.github.io/index.xml", "_aihot": { "initialBackfillLimit": 8 } },
+      "config": {
+        "feedUrl": "https://lilianweng.github.io/index.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["个人"],
+      "tags": [
+        "个人"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -944,12 +1126,19 @@
       "id": "rss-chip-huyen",
       "name": "Chip Huyen",
       "kind": "rss",
-      "config": { "feedUrl": "https://huyenchip.com/feed.xml", "_aihot": { "initialBackfillLimit": 8 } },
+      "config": {
+        "feedUrl": "https://huyenchip.com/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["个人"],
+      "tags": [
+        "个人"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -957,12 +1146,19 @@
       "id": "rss-ethan-mollick",
       "name": "Ethan Mollick",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.oneusefulthing.org/feed", "_aihot": { "initialBackfillLimit": 8 } },
+      "config": {
+        "feedUrl": "https://www.oneusefulthing.org/feed",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["个人"],
+      "tags": [
+        "个人"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -970,12 +1166,19 @@
       "id": "rss-nathan-lambert",
       "name": "Nathan Lambert · Interconnects",
       "kind": "rss",
-      "config": { "feedUrl": "https://www.interconnects.ai/feed", "_aihot": { "initialBackfillLimit": 8 } },
+      "config": {
+        "feedUrl": "https://www.interconnects.ai/feed",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["个人"],
+      "tags": [
+        "个人"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -983,12 +1186,19 @@
       "id": "rss-sebastian-raschka",
       "name": "Sebastian Raschka",
       "kind": "rss",
-      "config": { "feedUrl": "https://magazine.sebastianraschka.com/feed", "_aihot": { "initialBackfillLimit": 8 } },
+      "config": {
+        "feedUrl": "https://magazine.sebastianraschka.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 360,
-      "tags": ["个人"],
+      "tags": [
+        "个人"
+      ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
@@ -999,7 +1209,8 @@
       "config": {
         "feedUrl": "https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=PNAS",
         "_aihot": {
-          "initialBackfillLimit": 10
+          "initialBackfillLimit": 10,
+          "paper": true
         }
       },
       "tier": "T2",
@@ -1020,7 +1231,8 @@
       "config": {
         "feedUrl": "https://www.nature.com/ncomms.rss",
         "_aihot": {
-          "initialBackfillLimit": 10
+          "initialBackfillLimit": 10,
+          "paper": true
         }
       },
       "tier": "T2",

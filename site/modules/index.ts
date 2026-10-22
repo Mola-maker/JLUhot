@@ -3,5 +3,6 @@
 // pages' parts. Each list keeps the order its entries appear in on the site.
 import type { ModuleDeclaration } from "@aihot/contracts/modules";
 import heatmap from "@aihot/heatmap/module";
+import papers from "@aihot/papers/module";
 
-export const MODULES: readonly ModuleDeclaration[] = [heatmap];
+export const MODULES: readonly ModuleDeclaration[] = [heatmap, papers];
