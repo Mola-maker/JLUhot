@@ -10,6 +10,7 @@ dist/
 # Web production build
 apps/web/build/
 apps/web/.react-router/
+apps/web/public/audio/
 
 # Font package unpacked to regenerate the report nameplates (docs/customize.md)
 package/

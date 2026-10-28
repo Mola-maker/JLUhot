@@ -14,7 +14,8 @@ export default defineServerModule({
         const cursor = looseQuery(req).cursor || null;
         const { entries, nextCursor } = await loadPapers(cursor);
         const body: PapersPage = { generatedAt: new Date().toISOString(), entries, nextCursor };
-        return reply.header("Cache-Control", "public, max-age=60, s-maxage=60").send(body);
+        // Cache for 12 hours (half day)
+        return reply.header("Cache-Control", "public, max-age=43200, s-maxage=43200").send(body);
       } catch (error) {
         req.log.error({ err: error }, "papers api error");
         return reply.code(503).send({ code: "temporarily_unavailable" });

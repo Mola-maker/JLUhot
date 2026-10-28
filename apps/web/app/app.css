@@ -160,6 +160,16 @@
   --code-variable: #b3561e;
   --code-meta: #c24672;
   --selection: rgba(54, 92, 164, 0.14);
+  /* MolaMaker 视觉系统与淡色荧光笔标注令牌 */
+  --mola-pink: #f69dcb;
+  --mola-pink-glow: rgba(246, 157, 203, 0.45);
+  --mola-pink-soft: rgba(246, 157, 203, 0.15);
+  --mola-blue: #246eb6;
+  --mola-blue-glow: rgba(36, 110, 182, 0.35);
+  --mola-light-blue: #e6f0fc;
+  --highlighter-pink: rgba(246, 157, 203, 0.38);
+  --highlighter-blue: rgba(148, 191, 233, 0.42);
+  --highlighter-yellow: rgba(255, 226, 138, 0.45);
 }
 
 @media (min-width: 961px) {
@@ -218,6 +228,126 @@
   --code-variable: #f0a377;
   --code-meta: #ffa7c1;
   --selection: rgba(163, 196, 255, 0.22);
+  /* MolaMaker 视觉系统与淡色荧光笔标注令牌 (Dark) */
+  --mola-pink: #f8a8d2;
+  --mola-pink-glow: rgba(248, 168, 210, 0.4);
+  --mola-pink-soft: rgba(248, 168, 210, 0.18);
+  --mola-blue: #72aee6;
+  --mola-blue-glow: rgba(114, 174, 230, 0.35);
+  --mola-light-blue: rgba(114, 174, 230, 0.15);
+  --highlighter-pink: rgba(246, 157, 203, 0.28);
+  --highlighter-blue: rgba(114, 174, 230, 0.28);
+  --highlighter-yellow: rgba(255, 215, 100, 0.25);
+}
+
+/* ---------------------------------------------------------------------------
+   MolaMaker 风格粉蓝色动效 & 淡色荧光笔标注系统
+   --------------------------------------------------------------------------- */
+
+.hl-pink {
+  background: linear-gradient(104deg, rgba(246, 157, 203, 0) 0.5%, var(--highlighter-pink) 2.5%, var(--highlighter-pink) 97%, rgba(246, 157, 203, 0) 99.5%);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.12em 0.38em;
+  margin: 0 -0.12em;
+  border-radius: 4px 2px 5px 3px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.hl-pink:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 0 10px rgba(246, 157, 203, 0.45);
+}
+
+.hl-blue {
+  background: linear-gradient(104deg, rgba(148, 191, 233, 0) 0.5%, var(--highlighter-blue) 2.5%, var(--highlighter-blue) 97%, rgba(148, 191, 233, 0) 99.5%);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.12em 0.38em;
+  margin: 0 -0.12em;
+  border-radius: 3px 5px 2px 4px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.hl-blue:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 0 10px rgba(148, 191, 233, 0.5);
+}
+
+.hl-yellow {
+  background: linear-gradient(104deg, rgba(255, 226, 138, 0) 0.5%, var(--highlighter-yellow) 2.5%, var(--highlighter-yellow) 97%, rgba(255, 226, 138, 0) 99.5%);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.12em 0.38em;
+  margin: 0 -0.12em;
+  border-radius: 4px 3px 4px 2px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+@keyframes mola-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mola-reverse-spin {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes mola-pulse-glow {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px var(--mola-pink-glow));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 16px var(--mola-blue-glow)) drop-shadow(0 0 22px var(--mola-pink-glow));
+  }
+}
+
+@keyframes mola-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes mola-wave-bar {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
+
+.animate-mola-spin {
+  animation: mola-spin 24s linear infinite;
+}
+
+.animate-mola-spin-slow {
+  animation: mola-spin 48s linear infinite;
+}
+
+.animate-mola-reverse-spin {
+  animation: mola-reverse-spin 36s linear infinite;
+}
+
+.animate-mola-pulse {
+  animation: mola-pulse-glow 4s ease-in-out infinite;
+}
+
+.animate-mola-float {
+  animation: mola-float 5s ease-in-out infinite;
+}
+
+.mola-glass-card {
+  background: radial-gradient(120% 120% at 0% 0%, rgba(246, 157, 203, 0.12) 0%, rgba(36, 110, 182, 0.08) 50%, rgba(255, 255, 255, 0.9) 100%);
+  border: 1px solid rgba(220, 231, 242, 0.9);
+  box-shadow: 0 10px 32px -10px rgba(36, 110, 182, 0.08), 0 0 1px 1px rgba(246, 157, 203, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+[data-theme="dark"] .mola-glass-card {
+  background: radial-gradient(120% 120% at 0% 0%, rgba(248, 168, 210, 0.14) 0%, rgba(114, 174, 230, 0.09) 50%, rgba(23, 38, 64, 0.95) 100%);
+  border: 1px solid rgba(52, 75, 113, 0.7);
+  box-shadow: 0 10px 32px -10px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(248, 168, 210, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 @layer base {

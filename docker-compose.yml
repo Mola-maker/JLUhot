@@ -80,6 +80,8 @@ services:
       WEB_PORT: "3000"
     ports:
       - "${PORT:-3000}:3000"
+    volumes:
+      - ./apps/web/public/audio:/app/apps/web/public/audio:ro
     depends_on:
       api:
         condition: service_started

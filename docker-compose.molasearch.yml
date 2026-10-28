@@ -1,0 +1,11 @@
+# MolaSearch 接入 AIHOT 数据库的增量配置（独立文件，不改动原 compose/override）。
+# 用法：
+#   docker compose -f docker-compose.yml -f docker-compose.molasearch.yml up -d db
+# 作用：把 db 服务的 5432 发布到宿主 15432（避开本机常见 5432），供
+# molasearch 的 MOLA_PG_DSN=postgres://aihot:${POSTGRES_PASSWORD:-aihot}@127.0.0.1:15432/molasearch 使用。
+# 停用：docker compose -f docker-compose.yml -f docker-compose.molasearch.yml up -d db
+#       （删掉本文件再 up 即回到内网端口）
+services:
+  db:
+    ports:
+      - "15432:5432"

@@ -9,3 +9,4 @@ apps/web/.react-router
 .git
 .github
 *.log
+apps/web/public/audio

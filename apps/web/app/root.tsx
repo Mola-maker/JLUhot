@@ -20,6 +20,8 @@ import { apiGet } from "./lib/api.server";
 import { useHydratedFlag } from "./lib/hydration";
 import { titled } from "./lib/seo";
 import { webModules } from "./site-modules";
+import { MusicProvider } from "./features/music/music-context";
+import { MusicFloatingBar } from "./features/music/MusicFloatingBar";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.ico", sizes: "any" },
@@ -102,6 +104,7 @@ function SiteShell({ changelogVersion, children }: { changelogVersion: string | 
       <TabBar changelogVersion={changelogVersion} />
       {interactive && <SearchOverlay />}
       {interactive && <PullToRefresh />}
+      {interactive && <MusicFloatingBar />}
       <BackToTop />
     </div>
   );
@@ -123,12 +126,12 @@ export default function App() {
   // The admin has its own chrome.
   if (pathname === "/admin" || pathname.startsWith("/admin/")) return <Outlet />;
   return (
-    <>
+    <MusicProvider>
       <SiteShell changelogVersion={meta.changelogVersion}>
         <Outlet />
       </SiteShell>
       {webModules().map((m) => m.root?.Bottom && <m.root.Bottom key={m.name} />)}
-    </>
+    </MusicProvider>
   );
 }
 

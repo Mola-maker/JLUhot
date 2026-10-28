@@ -2,7 +2,7 @@
 // proxied to the api process, so one port serves the whole site; a reverse proxy in front may also send
 // them to the api directly.
 import { createReadStream } from "node:fs";
-import { stat } from "node:fs/promises";
+import { open, stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -22,6 +22,7 @@ const HOST = process.env.WEB_HOST || "127.0.0.1";
  */
 const TRUST_PROXY = process.env.TRUST_PROXY === "true";
 const CLIENT_DIR = path.resolve(import.meta.dirname, "build/client");
+const PUBLIC_DIR = path.resolve(import.meta.dirname, "public");
 
 const TYPES: Record<string, string> = {
   ".js": "text/javascript; charset=utf-8",
@@ -33,9 +34,31 @@ const TYPES: Record<string, string> = {
   ".woff2": "font/woff2",
   ".json": "application/json",
   ".txt": "text/plain; charset=utf-8",
+  ".lrc": "text/plain; charset=utf-8",
   ".ico": "image/x-icon",
   ".map": "application/json",
+  ".mp3": "audio/mpeg",
+  ".m4a": "audio/mp4",
+  ".flac": "audio/flac",
+  ".ogg": "audio/ogg",
+  ".wav": "audio/wav",
 };
+
+async function detectAudioMime(file: string, fallback: string): Promise<string> {
+  try {
+    const fh = await open(file, "r");
+    const buf = Buffer.alloc(12);
+    await fh.read(buf, 0, 12, 0);
+    await fh.close();
+    if (buf.subarray(4, 8).toString("ascii") === "ftyp") return "audio/mp4";
+    if (buf.subarray(0, 3).toString("ascii") === "ID3" || (buf[0] === 0xff && (buf[1]! & 0xe0) === 0xe0)) return "audio/mpeg";
+    if (buf.subarray(0, 4).toString("ascii") === "fLaC") return "audio/flac";
+    if (buf.subarray(0, 4).toString("ascii") === "OggS") return "audio/ogg";
+  } catch {
+    // ignore
+  }
+  return fallback;
+}
 
 // A file URL, not a path: on Windows import() reads "C:\..." as a URL with the scheme "c:".
 const build: ServerBuild = await import(pathToFileURL(path.resolve(import.meta.dirname, "build/server/index.js")).href);
@@ -52,7 +75,7 @@ const ssr = createRequestListener({ build: { ...build, routes }, mode: "producti
 class BadRequest extends Error {}
 
 /** Hashed build assets are immutable; anything else from the client build gets a short cache. */
-async function serveStatic(pathname: string, res: import("node:http").ServerResponse): Promise<boolean> {
+async function serveStatic(pathname: string, req: import("node:http").IncomingMessage, res: import("node:http").ServerResponse): Promise<boolean> {
   if (pathname.includes("..") || pathname.endsWith("/")) return false;
   let decoded: string;
   try {
@@ -60,14 +83,52 @@ async function serveStatic(pathname: string, res: import("node:http").ServerResp
   } catch {
     throw new BadRequest("malformed percent-encoding");
   }
-  const file = path.join(CLIENT_DIR, decoded);
+  let file = path.join(CLIENT_DIR, decoded);
   if (!file.startsWith(CLIENT_DIR)) return false;
-  const info = await stat(file).catch(() => null);
+  let info = await stat(file).catch(() => null);
+  if (!info?.isFile()) {
+    const pubFile = path.join(PUBLIC_DIR, decoded);
+    if (pubFile.startsWith(PUBLIC_DIR)) {
+      const pubInfo = await stat(pubFile).catch(() => null);
+      if (pubInfo?.isFile()) {
+        file = pubFile;
+        info = pubInfo;
+      }
+    }
+  }
   if (!info?.isFile()) return false;
+
   const immutable = pathname.startsWith("/assets/");
+  const isAudio = pathname.startsWith("/audio/");
+  const ext = path.extname(file);
+  const contentType = isAudio
+    ? await detectAudioMime(file, TYPES[ext] ?? "audio/mp4")
+    : (TYPES[ext] ?? "application/octet-stream");
+
+  const range = req.headers.range;
+  if (isAudio && range) {
+    const match = range.match(/bytes=(\d+)-(\d*)/);
+    if (match) {
+      const start = parseInt(match[1]!, 10);
+      const end = match[2] ? parseInt(match[2], 10) : info.size - 1;
+      if (start < info.size && end < info.size && start <= end) {
+        res.writeHead(206, {
+          "Content-Type": contentType,
+          "Content-Range": `bytes ${start}-${end}/${info.size}`,
+          "Accept-Ranges": "bytes",
+          "Content-Length": end - start + 1,
+          "Cache-Control": "public, max-age=86400",
+        });
+        createReadStream(file, { start, end }).pipe(res);
+        return true;
+      }
+    }
+  }
+
   res.writeHead(200, {
-    "Content-Type": TYPES[path.extname(file)] ?? "application/octet-stream",
+    "Content-Type": contentType,
     "Content-Length": info.size,
+    "Accept-Ranges": isAudio ? "bytes" : "none",
     "Cache-Control": immutable ? "public, max-age=31536000, immutable" : "public, max-age=3600",
     "X-Content-Type-Options": "nosniff",
   });
@@ -159,7 +220,7 @@ async function handle(req: import("node:http").IncomingMessage, res: import("nod
     return proxyToApi(req, res, { "x-forwarded-for": client, "x-real-ip": client });
   }
 
-  if ((req.method === "GET" || req.method === "HEAD") && pathname.includes(".") && (await serveStatic(pathname, res))) return;
+  if ((req.method === "GET" || req.method === "HEAD") && pathname.includes(".") && (await serveStatic(pathname, req, res))) return;
   pageResponse(req, res);
   return ssr(req, res);
 }

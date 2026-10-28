@@ -38,6 +38,7 @@ export default [
   route("feedback", "routes/feedback.tsx"),
   route("more", "routes/more.tsx"),
   route("starred", "routes/starred.tsx"),
+  route("music", "routes/music.tsx"),
   route("agent", "routes/agent.tsx"),
   ...modulePages,
   route("admin/login", "routes/admin-login.tsx"),

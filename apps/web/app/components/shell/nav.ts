@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { NAV, subjectAfter, withSubject } from "@aihot/site";
 import { webModules } from "../../site-modules";
 import {
-  IconBolt, IconBookmark, IconDoc, IconFlame, IconGrid, IconHeart, IconHistory, IconList, IconMessage, IconPlug, IconUser,
+  IconBolt, IconBookmark, IconDoc, IconFlame, IconGrid, IconHeart, IconHistory, IconList, IconMessage, IconMusic, IconPlug, IconUser,
 } from "../icons";
 
 export interface NavItem {
@@ -26,6 +26,7 @@ const SECTIONS: Array<{ title: string; items: NavItem[] }> = [
       { to: "/hot", label: "热点榜", icon: IconFlame },
       { to: "/daily", label: withSubject("日报"), icon: IconDoc },
       { to: "/topics", label: "主题", icon: IconGrid },
+      { to: "/music", label: "音乐视界", icon: IconMusic },
       { to: "/starred", label: "收藏", icon: IconBookmark },
     ],
   },
