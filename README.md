@@ -1,104 +1,226 @@
-# MolaMaker
+# JLUHOT (MolaMaker) · 智能吉大校园与学术前沿聚合平台
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-176b75?style=flat-square" alt="MIT License"></a>
-  <img src="https://img.shields.io/badge/Node.js-24-176b75?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js 24">
-  <img src="https://img.shields.io/badge/PostgreSQL-17-176b75?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL 17">
-  <img src="https://img.shields.io/badge/Docker-Compose-176b75?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose">
+  <a href="https://github.com/Mola-maker/JLUhot"><img src="https://img.shields.io/badge/GitHub-JLUhot-176b75?style=for-the-badge&logo=github&logoColor=white" alt="JLUhot Repository"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-00b4d8?style=for-the-badge" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/Node.js-24-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 24">
+  <img src="https://img.shields.io/badge/React_Router-v7_SSR-EA4335?style=for-the-badge&logo=reactrouter&logoColor=white" alt="React Router">
+  <img src="https://img.shields.io/badge/PostgreSQL-17-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL 17">
+  <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Compose">
+  <img src="https://img.shields.io/badge/MCP-Enabled-9B51E0?style=for-the-badge&logo=anthropic&logoColor=white" alt="MCP Server">
 </p>
 
 <p align="center">
-  <b>吉大新闻聚合站。</b><br>
-  每天从 98 个信源里抓取、归并、打分，出一份读得完的吉大日报。
+  <b>面向吉大师生、校友与学术科技探索者的全自动智能聚合站</b><br>
+  每天从 98 个校内外信源（吉大新闻网、校内 OA 通知、40 个学院、Nature/Science/AI 顶刊）持续采集，<br>
+  大模型独立两轮去噪打分与事件聚簇，每天早上 8:00 生成一份读得完的精编日报。<br>
+  集成 <b>MolaMaker 宇宙美学</b>、<b>Folia 6 模式音乐视效舞台</b> 与 <b>全学科顶刊工作台</b>，既给人看，也为 AI Agent 提供实时 MCP / API 数据源。
 </p>
 
-## 这是什么
+---
 
-MolaMaker 是一个吉林大学的新闻聚合站。它每天从校内信源（吉大新闻网、校内通知、教务、各学院）和一批 AI 行业信源里收资料，用大模型先筛一遍、再独立打两次分，挑出真正值得看的，写成中文标题和摘要；把不同来源说的同一件事聚成一个事件，按有多少人在说排出热度；每天早上出一份日报，周报月报再从日报里汇编。
+## 目录
 
-新闻原文的版权归各来源所有。这是一个聚合阅读站：把各来源的内容聚到一起展示，每篇都写明来源并给出原文链接。
+- [✨ 核心亮点](#-核心亮点)
+- [🎨 前端美学与交互体验](#-前端美学与交互体验)
+- [🎵 Folia-Major 音乐视觉舞台](#-folia-major-音乐视觉舞台)
+- [📚 学术论文与前沿资讯工作台](#-学术论文与前沿资讯工作台)
+- [🤖 面向 AI Agent 的原生出口 (MCP & API)](#-面向-ai-agent-的原生出口-mcp--api)
+- [⚙️ 工作架构与数据流](#️-工作架构与数据流)
+- [📡 覆盖的 98 个精选信源](#-覆盖的-98-个精选信源)
+- [🚀 1 分钟快速启动 (Docker)](#-1-分钟快速启动-docker)
+- [🛠️ 技术栈一览](#️-技术栈一览)
+- [🤝 二次开发与上游框架](#-二次开发与上游框架)
+- [📄 开源协议](#-开源协议)
 
-## 它盯哪些信源
+---
 
-一共 98 个，清单在 [`industry/sources.json`](industry/sources.json)，首次启动时导入。
+## ✨ 核心亮点
 
-| 类别 | 数量 | 说明 |
+| 维度 | 功能特色 | 解决的痛点 |
 |---|---|---|
-| 校内新闻与讲座 | 3 | 吉大新闻网、讲座预告 |
-| 校内通知（OA） | 5 | 校内通知渠道，由 `deploy/oa-collector.py` 抓取后推送进来 |
-| 学院来源 | 40 | 各学院网站 |
-| AI 行业 | 50 | AI 公司与研究机构、媒体、学术期刊、GitHub Trending 榜单和作者订阅 |
+| **校内信息全覆盖** | 覆盖吉大主网、OA 办公系统内网通知、40 个学院通知与讲座预告 | 不用每天手动点开几十个学院官网，重要通知与活动一览无遗 |
+| **大模型两轮去噪** | 先预筛，再由 LLM 独立进行两次量化打分（内容价值、事实密度等 5 个维度） | 告别形式主义官话水文、营销号软文与无关转发 |
+| **多源事件聚类** | 语义向量 + 语义逻辑双重识别，不同媒体报道的同一件事自动合并归簇 | 杜绝「官网发一篇、各渠道转十篇」带来的信息刷屏 |
+| **真实热度机制** | 48 小时动态半衰期，以独立发声来源加权计算，不计重复营销 | 排在前面的，是全校师生或行业真正高度关注的重大事项 |
+| **周期性精编报刊** | 每日 08:00 出日报、每周一出周报、每月 1 日出月报 | 碎片化信息转化为连贯的主线脉络与重要节点综合回顾 |
+| **高颜值阅读体验** | Visual Focus 聚焦展台、淡色荧光笔重点高亮、深浅色自适应与玻璃拟态 | 提升长文与精读效率，打造极具艺术感的浏览体验 |
+| **音乐与工作陪伴** | 移植 Folia 视觉舞台（6 种 Canvas 动效），支持真实原声流与 LRC 歌词跳转 | 边看新闻论文边享受极致沉浸式音画律动 |
 
-信源分三级（官方一手、官方账号与准官方、媒体与个人），各级入选门槛不同，抓取频率按产出自动调整。怎么配见[信源](docs/sources.md)。
+---
 
-## 它是怎么工作的
+## 🎨 前端美学与交互体验
 
-一条资料从信源进来，先判重，再预筛；可能重要的独立打两次分，写好中文标题和摘要，和别的报道聚成事件，算进热度。分数过了门槛、又不是精选里已有新闻的重复，才进精选；日报按规则编出当天要闻，周报、月报再从日报里汇编。每一步的提示词都在 [`industry/prompts/`](industry/prompts/)，改标准不用改代码。详见[精选与校准](docs/selection.md)。
+参考 `E:\molamaker` 宇宙星轨设计理念，彻底告别枯燥单调的新闻列表：
 
-### 通知公告的采集
+- 🌟 **Visual Focus（视觉聚焦）展台**：首页顶部焦点新闻轮播展示，辅以粉蓝（`#ff4d94` / `#00b4d8`）宇宙天体轨道光晕，关键事件第一眼抓住眼球。
+- 🖍️ **淡色荧光笔重点高亮（Fluorescent Highlighter）**：
+  - 设计自然倾斜微角（`-0.3deg` / `0.4deg`）与分段内联渲染（`box-decoration-break: clone`），完美支持多行长文自然折行。
+  - 在新闻卡片、详情正文与论文摘要中智能标记关键结论、机构与核心数字。
+- 🌌 **极简拟态卡片与暗色适配**：支持全站暗色（Dark Mode）与浅色无缝切换，搭配毛玻璃渐变边框与内嵌柔光阴影。
 
-校内的通知公告没有公开的 RSS，由 [`deploy/oa-collector.py`](deploy/) 定时抓取、解析后，经外部推送接口送进来（解析逻辑在 `deploy/oa_parse.py`，是纯函数，单独有测试）。学院来源则直接按各学院网站的结构配置抓取。
+---
 
-### 聚簇与热点
+## 🎵 Folia-Major 音乐视觉舞台
 
-同一件事，官网发一篇、别的渠道转十篇，读者只需要看到一次。MolaMaker 把它们聚成一个**事件**：先用标题摘要的向量（没配向量服务时比文字重合度）在最近两周里找候选，再让模型判断是同一件事、后续进展，还是两件事；拿不准的合并，写入前再让模型复核一遍（复核可以单独换一家模型，设 `GROUP_REVIEW_MODEL`）。
+灵感源自 [`chthollyphile/folia-major`](https://github.com/chthollyphile/folia-major)，在网站中构建了全局音乐体验中心（可通过顶部导航 `/music` 进入，并在全站拥有底栏悬浮迷你播放器）：
 
-**热度**按事件算，不按文章算：48 小时内，每个独立来源只算一次，24 小时减半。重复抓取不会多算，一家来源发十篇也只算一次，所以排在前面的，是真正有很多人在说的事。
+<div align="center">
+  <b>支持 6 大 Canvas 音频响应式视觉舞台：</b>
+</div>
 
-## 你会得到什么
+```
+ 🌊 凝彩 (Tempera)   ── 多层流体正弦/余弦声波叠加，受频段实时调制
+ 💫 光晕 (Halo)       ── 旋转黑胶唱片，伴随外层粉蓝虚线星轨自转
+ 🌌 频谱 (Spectrum)   ── 36 频段霓虹律动柱状图，顶点实时粒子碰撞喷射
+ 🧊 方块魔方 (Cube)   ── 3D 透视投影旋转专辑立方体 + 重低音震感缩放 + 6 颗卫星专辑环绕
+ 📜 流光歌词 (Lyrics) ── 动感同步 LRC 歌词居中聚光，随节拍脉冲呼吸缩放
+ ✨ 粒子星轨 (Stardust) ── 64 颗恒星引力轨道，动态星尘连线系统
+```
 
-| | |
-|---|---|
-| **多种信源** | RSS、网页列表、JSON 接口、X 账号、微信公众号，以及你自己脚本推送进来的内容（校内通知走的就是这一种）。信源分三级（官方一手、官方账号与准官方、媒体与个人），各级入选门槛不同；抓取频率按产出自动调整 |
-| **精选** | 预筛，同一份评分标准独立打两次分，再按信源分级的门槛决定入选；同一条新闻只占一条，换个说法的重复不进。提示词和门槛全部公开，全部可以改；用你自己标注的样本在 SelectBench 里校准 |
-| **写作** | 中文标题、答案先行的摘要、推荐理由，外文全文翻译；分类、标签和新闻事实单独抽取；防止模型把原文没提到的机构写进标题 |
-| **聚簇** | 不同来源报道的同一件事聚成一个事件，后续进展挂在同一个事件下，事件页有综述；进展和报道时间线可一起切换“最新在前”或“最早在前”；人工改过的归属不会被覆盖。期刊和 arXiv 的论文独立成条，不聚成事件，在“论文”页按天浏览 |
-| **热点** | 按事件算热度：独立来源越多越靠前；和 6 小时前比，涨得快的标上升，新出现的标“新” |
-| **日报、周报、月报** | 每天出日报（默认 08:00），按规则编出当天要闻：一件事一条，报过的事只在有新进展时跟进，不调模型。每周一出周报、每月 1 日出月报（默认 10:00、10:30），从日报里汇编，模型只写总述和栏目导读。几点出刊在 `site/site.ts` 的 `EDITION_TIMES` 里改 |
-| **主题与搜索** | 院系机构、科研方向、校园生活三类主题页；标题摘要搜索和全文相关搜索 |
-| **阅读设置** | 深浅色外观、网站默认字体或浏览器默认字体；收藏和阅读设置只保存在本机，可以导出、导入备份 |
-| **给 Agent 用** | RSS（精选、全部、全文、日报、周报、月报）、公开 API、MCP、Agent Markdown、`llms.txt`，同一份内容给人看也给 Agent 用 |
-| **后台** | 信源管理与试抓、内容诊断与人工评分更正、精选评测、每一步单独换模型、付费服务的预算熔断、运行记录与告警 |
+- **真实高保真音源**：内置网易云音乐本地解码缓存（支持 FLAC、AAC/MP4、MP3 容器）与云端高清流双轨回退机制。
+- **HTTP 206 流式分块传输**：后端通过二进制 Magic Byte 精准嗅探音频 MIME 类型，全面支持浏览器 `<audio>` 毫秒级时间轴随意 Seek 拖拽。
+- **全屏与精准歌词同步**：右侧抽屉式歌词面板，支持毫秒级精准高亮滚动与单句点击即刻跳转播放。
 
-## 跑起来
+---
 
-需要 [Docker](https://docs.docker.com/get-started/get-docker/)、[Node.js 24](https://nodejs.org/en/download)（运行 `init-env` 生成配置要用），和一个 OpenAI 兼容的模型 API Key（DeepSeek、千问、智谱都可以）。
+## 📚 学术论文与前沿资讯工作台
 
-`init-env` 默认按 DeepSeek 配置。用千问、智谱等别家，照 `.env.example` 里的例子改 `.env` 的 `LLM_BASE_URL`、`LLM_MODEL` 和 `LLM_EXTRA_JSON`；用推理模型（先想再答）时，还要设 `LLM_REASONING_TOKENS` 给推理留出输出额度。
+专门开设 `/papers` 学术聚合模块，服务吉大师生科研与跟踪学术前沿：
+
+- **顶尖期刊与会议收录**：涵盖 Nature、Science、Cell、PNAS、CVPR、NeurIPS、ICML、arXiv 等顶级期刊会议。
+- **6 大学科分类导航**：
+  `全部论文` ｜ `精选高分` ｜ `综合顶刊` ｜ `计算机 & AI` ｜ `生命与医学` ｜ `物理与材料`
+- **顶刊快速筛选**：点击 Nature / Science / CVPR 等药丸标签一键过滤。
+- **即时检索与荧光高亮**：支持按论文标题、作者团队、摘要关键词实时搜索，并在正文中自动荧光笔高亮匹配词。
+- **半天刷新机制**：接口与页面采用 12 小时（43200 秒）缓存策略，兼顾论文时效性与极速秒开体验。
+
+---
+
+## 🤖 面向 AI Agent 的原生出口 (MCP & API)
+
+JLUHOT 不仅是为人设计的聚合阅读站，也是一个面向 AI 时代的 **Agent-Native 校园与科技知识库基础设施**：
+
+1. **Model Context Protocol (MCP)**：
+   - 原生支持 Anthropic MCP 协议标准。
+   - 接入 Claude Desktop、Cursor、Dify 等 Agent 平台后，Agent 可以直接调用 `molamaker_search`、`molamaker_get_latest` 等工具获取最新的校园动态、通知与学术论文。
+2. **多模态标准化出口**：
+   - **OpenAPI / REST API**：完整规范文档位于 `/openapi-v1.json`。
+   - **Agent Markdown 友好接口**：专用简化路由 `/api/v1/agent`，去除非文本噪声，方便 LLM 抓取解析。
+   - **`llms.txt` 标准**：符合主流 LLM 索引规范，位于 `/llms.txt`。
+   - **全量与分类 RSS**：支持精选源、全量源、日报周报月报单独订阅。
+
+---
+
+## ⚙️ 工作架构与数据流
+
+```
+ ┌────────────────────────────────────────────────────────┐
+ │                      98 个多维信源                      │
+ │   吉大主网 3 个 ｜ OA 内网通知 5 个 ｜ 学院网站 40 个 ｜ 学术/AI 50 个 │
+ └──────────────────────────┬─────────────────────────────┘
+                            │ (抓取 / Python OA 爬虫推送)
+                            ▼
+ ┌────────────────────────────────────────────────────────┐
+ │                    判重与预筛选阶段                     │
+ │          URL/正文哈希判重 ──> 行业相关性初筛 ──> 垃圾过滤         │
+ └──────────────────────────┬─────────────────────────────┘
+                            │
+                            ▼
+ ┌────────────────────────────────────────────────────────┐
+ │                 大模型两轮独立量化评分                  │
+ │      事实密度 ｜ 影响范围 ｜ 时效性 ｜ 独家性 ｜ 规范性      │
+ │          (双模型独立裁决，低于入选门槛直接剔除)          │
+ └──────────────────────────┬─────────────────────────────┘
+                            │
+                            ▼
+ ┌────────────────────────────────────────────────────────┐
+ │                 语义向量聚簇与事件生成                  │
+ │      不同信源同题报道聚为「单一事件」 ──> 动态衰减热度计算      │
+ └──────┬───────────────────┬───────────────────┬─────────┘
+        │                   │                   │
+        ▼                   ▼                   ▼
+ ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+ │ 📰 门户与日报 │    │ 🎵 Folia音乐 │    │ 🤖 Agent出口 │
+ │ Visual Focus │    │ 6 大视效舞台 │    │ MCP Server   │
+ │ 荧光高亮标记 │    │ 原声音频流式 │    │ REST API     │
+ │ 周期精编报刊 │    │ 毫秒歌词跳转 │    │ llms.txt/RSS │
+ └──────────────┘    └──────────────┘    └──────────────┘
+```
+
+---
+
+## 📡 覆盖的 98 个精选信源
+
+完整信源清单可查阅 [`industry/sources.json`](industry/sources.json)：
+
+- **校内新闻与重大事件（3 个）**：吉大新闻网（主站头条、综合新闻、讲座论坛）。
+- **校内重要通知（OA 5 个）**：校内通知、教务处重要公告、国际交流、科研处等，由 `deploy/oa-collector.py` 自动化抓取转换。
+- **各院系官方渠道（40 个）**：计算机科学与技术学院、软件学院、人工智能学院、通信工程学院、数学学院、物理学院、白求恩第一/第二/第三临床医学院、商学与管理学院等全部主流院系。
+- **学术与 AI 前沿（50 个）**：Nature、Science、Cell 顶级期刊、arXiv 计算机科学前沿、GitHub 热门技术趋势、顶级 AI 实验室与科技媒体一手跟踪。
+
+---
+
+## 🚀 1 分钟快速启动 (Docker)
+
+### 环境要求
+- [Docker](https://docs.docker.com/get-started/get-docker/) & Docker Compose
+- [Node.js 24+](https://nodejs.org/en/download)（用于初始化配置文件）
+- 任意 OpenAI 兼容的模型 API Key（DeepSeek、千问 Qwen、智谱 GLM、Claude 等均可）
+
+### 部署步骤
 
 ```bash
+# 1. 克隆本仓库
 git clone https://github.com/Mola-maker/JLUhot.git
 cd JLUhot
+
+# 2. 生成环境配置（以 DeepSeek 为例）
 node scripts/init-env.ts --llm-key <你的模型 API Key>
+
+# 3. 启动全套服务
 docker compose up -d --build
 ```
 
-打开 <http://localhost:3000>。后台在 `/admin`，管理员密码在 `.env` 的 `ADMIN_PASSWORD` 里。一两分钟后开始有内容，第一次导入的资料大约半小时处理完。
+访问体验：
+- **网站首页**：<http://localhost:3000>
+- **音乐视觉舞台**：<http://localhost:3000/music>
+- **学术论文工作台**：<http://localhost:3000/papers>
+- **后台管理系统**：<http://localhost:3000/admin>（管理员密码见 `.env` 的 `ADMIN_PASSWORD`）
+- **Agent 接入引导**：<http://localhost:3000/agent>
+- **接口说明文档**：<http://localhost:3000/openapi-v1.json>
 
-站点跑起来后，打开 `/agent` 可以复制 MCP、RSS 或 API 的接入方式；只能读网页的 Agent 从 `/api/v1/agent` 开始；接口说明在 `/openapi-v1.json`。
+> 💡 **本地挂载说明**：本地音频媒体文件位于 `apps/web/public/audio/`，通过 Docker Volume 以只读模式挂载至容器，无需打包进镜像，保障镜像极致轻量。
 
-机器上没有 Node、服务器在中国大陆、要配域名和 HTTPS，或者不用 Docker、直接在 Linux、macOS 上跑（Windows 用 WSL2），见[部署](docs/deploy.md)。
+---
 
-## 文档
+## 🛠️ 技术栈一览
 
-| 文档 | 内容 |
-|---|---|
-| [给 Agent 的说明](AGENTS.md) | 这个仓库的结构、最常见的任务、要守住的规则 |
-| [把它改成另一个行业](docs/customize.md) | 站名、分类、主题、信源、提示词、门槛、模型、品牌，一步一步来 |
-| [信源](docs/sources.md) | 各类信源怎么配，分级和全文，抓取频率，旧文和存档，外部推送接口 |
-| [精选与校准](docs/selection.md) | 一条资料怎么变成精选、怎么编进日报周报月报，怎么用自己的样本校准 |
-| [事件归组与关系评测](docs/grouping.md) | 事件关系怎么判断，怎么用自己标注的成对样本评测 |
-| [部署](docs/deploy.md) | Docker、域名和 HTTPS、中国大陆、更新、备份、花多少钱 |
-| [架构](docs/architecture.md) | 三个进程、几条不变的规则、目录、模块、数据库迁移、对外出口、测试 |
+- **前端架构**：React Router v7（全栈 SSR）、React 19、Tailwind CSS、Canvas 2D / 3D Web Audio API
+- **后端服务**：Node.js 24、Fastify、TypeScript、pg-boss（分布式异步任务队列）
+- **数据存储**：PostgreSQL 17（JSONB + 倒排索引 + 事务性迁移）
+- **AI 与大模型**：OpenAI 兼容接口、SelectBench 双模校准系统、Prompt 驱动抽取
+- **容器与运维**：Docker Compose 多阶段极速构建、自动健康检查与安全熔断
 
-技术栈：Node.js 24 · TypeScript · React Router（服务端渲染）· Fastify · PostgreSQL · pg-boss · Tailwind CSS · Docker Compose。
+---
 
-## 基于 AIHOT 框架
+## 🤝 二次开发与上游框架
 
-本站是 [AIHOT](https://github.com/KKKKhazix/AIHOT) 的二次开发——一个「自己找热点、自己写日报」的行业热点站框架。引擎、后台、精选流程、聚簇与热度算法都来自上游，本站把行业从「AI」换成了「吉林大学」：换了信源、分类标签与主题，重写了精选标准与写作提示词，并加了一个校内通知的采集器（[`deploy/`](deploy/)）。
+本项目深度基于开源项目 [AIHOT](https://github.com/KKKKhazix/AIHOT) 构建并拓展：
+- 将原本专注单一 AI 领域的算法引擎泛化迁移为「吉林大学校园 + 科技学术」双轨驱动模式；
+- 重写并深度校准了适配高校环境的提示词、分级门槛与分类字典（`industry/`）；
+- 增加了 OA 内网通知采集桥接系统（`deploy/`）；
+- 原创增加了 **Visual Focus 宇宙星轨展台**、**淡色荧光笔重点高亮**、**Folia-Major 6 模态音乐视效舞台** 以及 **顶刊论文工作台**。
 
-上游框架的说明见 [README.en.md](README.en.md)；框架本身怎么改造成别的行业，见[把它改成另一个行业](docs/customize.md)。**AIHOT 的名字和 Logo 不在本站的使用范围内**，本站用的是自己的站名与图标（`site/brand/`）。
+相关参考文档：
+- [给 Agent 的说明](AGENTS.md)
+- [信源配置与扩展指南](docs/sources.md)
+- [精选与样本校准流程](docs/selection.md)
+- [事件归组与关系评测](docs/grouping.md)
+- [架构设计与约定](docs/architecture.md)
 
-## 许可
+---
 
-代码使用 [MIT 许可证](LICENSE)。字体有自己的许可，见 [NOTICE](NOTICE)。
+## 📄 开源协议
+
+代码基于 [MIT License](LICENSE) 开源发布。所收录新闻、公告与论文原文之版权完整归各原始发布机构及作者所有。
